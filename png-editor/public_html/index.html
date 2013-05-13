@@ -89,21 +89,22 @@
                     <nav class="span2">
                         <ul class="nav nav-list navbar-inner affix">
                             <li class="nav-header">Jump to</li>
-                            <li><a href="#FileLoadStatusDiv">Status</a></li>
+                            <li><a href="#FileInfoDiv">File info</a></li>
                             <li><a href="#EditedImageDiv">Edited png</a></li>
                             <li><a href="#OriginalImageDiv">Original png</a></li>
                             <li><a href="#PNGEditorDiv">PNG editor</a></li>
                         </ul>
                     </nav>
 
-                    <div id="main" class="span10" role="main" ng-controller="MyCtrl">
+                    <div id="main" class="span10" role="main" ng-controller="BinPngEditorCtrl">
                         <!-- File load status -->
-                        <div class="row">
-                            <div id="FileLoadStatusDiv" class="span12"></div>
+                        <div class="row-fluid">
+                            <div id="FileInfoDiv" class="span12"></div>
                             <div>
-                                <p>File name: {{theFile.name}}</p>
-                                <p>File type: {{theFile.type}}</p>
-                                <p>File size: {{theFile.size}} bytes</p>
+                                <h2>File info</h2>
+                                <p ng-init="pngFile.name='--'">File name: {{pngFile.name}}</p>
+                                <p ng-init="pngFile.type='--'">File type: {{pngFile.type}}</p>
+                                <p ng-init="pngFile.size='--'">File size: {{pngFile.size}} bytes</p>
                             </div>
                         </div>
 
@@ -128,7 +129,7 @@
                                         <fieldset>
                                             <legend class="hidden">PNG file</legend>
                                             <label for="image-file"><i id="image-file-icon" class="icon-folder-open" data-toogle="tooltip" title="Select a file to load"></i></label>
-                                            <div class="hidden"><input type="file" id="image-file" name="image-file" multiple="" onchange="MyCtrl.prototype.setFile(this)"/></div>
+                                            <div class="hidden"><input type="file" id="image-file" name="image-file" multiple="" onchange="BinPngEditorCtrl.prototype.setFile(this)"/></div>
                                         </fieldset>
                                     </form>
                                 </div>
@@ -169,17 +170,16 @@
         <script src="js/png-editor/base64.js"></script>
         <script>
                                                 // Angular
-                                                var myApp = angular.module('myApp', []);
+                                                var binPngEditorApp = angular.module('binPngEditorApp', []);
 
-                                                function MyCtrl($scope, $window) {
-                                                    $scope.name = 'Superhero';
-                                                    MyCtrl.prototype.$scope = $scope;
+                                                function BinPngEditorCtrl($scope, $window) {
+                                                    BinPngEditorCtrl.prototype.$scope = $scope;
                                                 }
 
-                                                MyCtrl.prototype.setFile = function(element) {
+                                                BinPngEditorCtrl.prototype.setFile = function(element) {
                                                     var $scope = this.$scope;
                                                     $scope.$apply(function() {
-                                                        $scope.theFile = element.files[0];
+                                                        $scope.pngFile = element.files[0];
                                                     });
                                                 };
         </script>
@@ -620,7 +620,7 @@
              * @param {File} file
              */
             function parseFile(file) {
-                $("#FileLoadStatusDiv").append($(
+                $("#FileInfoDiv").append($(
                         "<p>File information: <strong>" + file.name +
                         "</strong> type: <strong>" + file.type +
                         "</strong> size: <strong>" + file.size +

@@ -169,19 +169,27 @@
         <script src="js/helper.js"></script>
         <script src="js/png-editor/base64.js"></script>
         <script>
-                                                // Angular
-                                                var binPngEditorApp = angular.module('binPngEditorApp', []);
+                                                // I need this script section to work-around a NB formatting bug:
+                                                // https://netbeans.org/bugzilla/show_bug.cgi?id=229658
+                                                // An onchange="blahblah" attribute breaks the javascript
+                                                //  indentation level
+                                                ;
+        </script>
+        <script>
+            // Angular
+            var binPngEditorApp = angular.module('binPngEditorApp', []);
 
-                                                function BinPngEditorCtrl($scope, $window) {
-                                                    BinPngEditorCtrl.prototype.$scope = $scope;
-                                                }
+            function BinPngEditorCtrl($scope, $window) {
+                BinPngEditorCtrl.prototype.$scope = $scope;
+            }
 
-                                                BinPngEditorCtrl.prototype.setFile = function(element) {
-                                                    var $scope = this.$scope;
-                                                    $scope.$apply(function() {
-                                                        $scope.pngFile = element.files[0];
-                                                    });
-                                                };
+            BinPngEditorCtrl.prototype.setFile = function(element) {
+                var $scope = this.$scope;
+                $scope.$apply(function() {
+                    $scope.pngFile = element.files[0];
+                });
+            };
+
         </script>
         <script>
             // Initialize bootstrap tooltips

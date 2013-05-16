@@ -2,44 +2,23 @@
 
 /* http://docs.angularjs.org/guide/dev_guide.e2e-testing */
 
-describe('my app', function() {
+/** A dsl returning a "true" future */
+angular.scenario.dsl('willBeTrue', function() {
+    return function(selector) {
 
-  beforeEach(function() {
-    browser().navigateTo('../../app/index.html');
-  });
+        return this.addFutureAction('Returning true', function(appWindow, $document, done) {
+            done(null, true);
+        });
+    };
+});
 
-
-  it('should automatically redirect to /view1 when location hash/fragment is empty', function() {
-    expect(browser().location().url()).toBe("/view1");
-  });
-
-
-  describe('view1', function() {
-
+describe('binPNGEditorTest', function() {
     beforeEach(function() {
-      browser().navigateTo('#/view1');
+        browser().navigateTo('../../public_html/index.html');
     });
 
 
-    it('should render view1 when user navigates to /view1', function() {
-      expect(element('[ng-view] p:first').text()).
-        toMatch(/partial for view 1/);
+    it('should pass a "expect true to be true"', function() {
+        expect(willBeTrue()).toBe(true);
     });
-
-  });
-
-
-  describe('view2', function() {
-
-    beforeEach(function() {
-      browser().navigateTo('#/view2');
-    });
-
-
-    it('should render view2 when user navigates to /view2', function() {
-      expect(element('[ng-view] p:first').text()).
-        toMatch(/partial for view 2/);
-    });
-
-  });
 });

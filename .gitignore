@@ -1,0 +1,4 @@
+png-editor/test_out/**
+png-editor/nbproject/private/
+png-editor/logs/**
+png-editor/coverage/**

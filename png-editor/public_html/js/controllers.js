@@ -3,8 +3,15 @@
 /* Controllers */
 angular.module('binPngEditorApp.controllers', [])
         .controller('BinPngEditorCtrl', ['$scope', function($scope) {
-        this.scope = $scope;
-        this.setFile = function(element) {
-            scope.pngFile = element.files[0];
+        
+        $scope.pngFile = {
+            name: '--',
+            type: '--',
+            size: '--'
+        };
+        $scope.setFile = function(element) {
+            $scope.$apply(function() {
+                $scope.pngFile = element.files[0];
+            });
         };
     }]);

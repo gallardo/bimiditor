@@ -51,7 +51,7 @@
         <script src="lib/modernizr-2.0.6.min.js"></script>
     </head>
 
-    <body>
+    <body> 
         <div id="wrap">
             <header class="hero-unit">
                 <h1>binPNG Editor</h1>
@@ -75,9 +75,9 @@
                             <div id="FileInfoDiv" class="span12"></div>
                             <div>
                                 <h2>File info</h2>
-                                <p ng-init="pngFile.name='--'">File name: {{pngFile.name}}</p>
-                                <p ng-init="pngFile.type='--'">File type: {{pngFile.type}}</p>
-                                <p ng-init="pngFile.size='--'">File size: {{pngFile.size}} bytes</p>
+                                <p>File name: {{pngFile.name}}</p>
+                                <p>File type: {{pngFile.type}}</p>
+                                <p>File size: {{pngFile.size}} bytes</p>
                             </div>
                         </div>
 
@@ -102,7 +102,7 @@
                                         <fieldset>
                                             <legend class="hidden">PNG file</legend>
                                             <label for="image-file"><i id="image-file-icon" class="icon-folder-open" data-toogle="tooltip" title="Select a file to load"></i></label>
-                                            <div class="hidden"><input type="file" id="image-file" name="image-file" multiple="" onchange="BinPngEditorCtrl.prototype.setFile(this)"/></div>
+                                            <div class="hidden"><input type="file" id="image-file" name="image-file" multiple="" onchange="angular.element($('#main')).scope().setFile(this);"/></div>
                                         </fieldset>
                                     </form>
                                 </div>

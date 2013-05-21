@@ -113,6 +113,13 @@
                         </div><!-- /#ImagesDiv -->
 
                         <div class="row-fluid">
+                            <ng-switch on="pngFile.loaded">
+                                <div ng-switch-when="true">
+                                    <header>File signature</header>
+                                    <label>Signature</label>
+                                    <input name="signature-textarea" type="text" size="24" readonly="readonly" ng-model="pngImage.getSignatureHex"/>
+                                </div>
+                            </ng-switch>
                             <div id="PNGEditorDiv"></div>
                         </div>
                     </div><!-- /#main -->
@@ -427,6 +434,8 @@
                     }
 
                     var pngImage = PngImage(evt.target.result);
+
+                    angular.element($('#main')).scope().setImage(pngImage);
 
                     // Render original image
                     pngImage.renderInImg($('#original-image-img')[0]);

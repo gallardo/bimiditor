@@ -27,6 +27,7 @@ preprocessors = {
 
 // Possible Values: dots, progress, junit, growl, coverage
 reporters = [
+	'dots',
 	'junit',
 	'progress',
 	'coverage'

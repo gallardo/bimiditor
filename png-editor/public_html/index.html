@@ -102,7 +102,7 @@
                                         <fieldset>
                                             <legend class="hidden">PNG file</legend>
                                             <label for="image-file"><i id="image-file-icon" class="icon-folder-open" data-toogle="tooltip" title="Select a file to load"></i></label>
-                                            <div class="hidden"><input type="file" id="image-file" name="image-file" multiple="" onchange="angular.element($('#main')).scope().setFile(this);"/></div>
+                                            <div class="hidden"><input type="file" id="image-file" name="image-file" multiple=""/></div>
                                         </fieldset>
                                     </form>
                                 </div>
@@ -154,11 +154,11 @@
         <script src="js/services.js"></script>
         <script src="js/pngimage.js"></script>
         <script>
-                                                // I need this script section to work-around a NB formatting bug:
-                                                // https://netbeans.org/bugzilla/show_bug.cgi?id=229658
-                                                // An onchange="blahblah" attribute breaks the javascript
-                                                //  indentation level
-                                                ;
+            // I need this script section to work-around a NB formatting bug:
+            // https://netbeans.org/bugzilla/show_bug.cgi?id=229658
+            // An onchange="blahblah" attribute breaks the javascript
+            //  indentation level
+            ;
         </script>
         <script>
             /**
@@ -271,6 +271,7 @@
                 // file select
                 fileselect.addEventListener("change", fileSelectHandler, false);
             }
+
             function initDragAndDrop() {
                 var filedrag = $("#file-drag")[0];
                 // is XHR2 available?
@@ -292,74 +293,29 @@
 
             /**
              * File selection
-             * @param {Event} e
+             * @param {Event} e <tt>change</tt> event fired from the
+             *      <tt>input type="file"</tt> or <tt>mouse</tt> event fired
+             *      from the drag-and-drop target div.
              */
             function fileSelectHandler(e) {
                 // cancel event and hover styling
                 fileDragHover(e);
-                // fetch FileList object
+                // fetch FileList object:
+                // - if change event: e.target.files
+                // - if mouse event: e.dataTransfer.files
                 var files = e.target.files || e.dataTransfer.files;
-                parseFile(files[0]);
-            }
 
-            /**
-             * Output file information
-             * @param {File} file
-             */
-            function parseFile(file) {
-                $("#FileInfoDiv").append($(
-                        "<p>File information: <strong>" + file.name +
-                        "</strong> type: <strong>" + file.type +
-                        "</strong> size: <strong>" + file.size +
-                        "</strong> bytes</p>"
-                        ));
-                if (file.type === "image/png") {
-                    parseImage(file);
-                }
-            }
-
-            /**
-             * Parses the image file
-             * @param {File} file
-             */
-            function parseImage(file) {
-                if (!window.FileReader)
-                    return; // Browser is not compatible
-
-                var reader = new FileReader();
-
-                reader.onload = function(evt) {
-                    if (evt.target.readyState !== 2)
-                        return;
-                    if (evt.target.error) {
-                        alert('Error while reading file');
-                        return;
-                    }
-
-                    var pngImage = PngImage(evt.target.result);
-
-                    angular.element($('#main')).scope().setImage(pngImage);
-
-                    // Render original image
-                    pngImage.renderInImg($('#original-image-img')[0]);
-
-                    // Re-create GUI editor and refresh image
-                    PngGUI($('#PNGEditorDiv')[0], pngImage)
-                            .setImageViewport($('#edited-image-img')[0])
-                            .refresh();
-                };
-
-                reader.readAsArrayBuffer(file);
-
+                // Set controller's file
+                angular.element($('#main')).scope().setFile(files[0]);
             }
 
             // Initialization -------------------------------------------------
             $(function() {
-                initFileSelector();
                 if (window.File && window.FileList && window.FileReader) {
+                    initFileSelector();
                     initDragAndDrop();
                 }
-                
+
                 // Bootstrap tooltips
                 $('#image-file-icon').tooltip();
                 $('#save-file-icon').tooltip();

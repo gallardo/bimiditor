@@ -9,9 +9,18 @@ angular.module('binPngEditorApp.controllers', [])
             type: '--',
             size: '--'
         };
-        $scope.setFile = function(element) {
+        $scope.setFile = function(file) {
+            if (file.type === "image/png") {
+                parseImage(file);
+            } else {
+                $("#FileInfoDiv").append($(
+                        "<p>File format <strong>" + file.type +
+                        "</strong> not supported.</p>"
+                        ));
+            }
+
             $scope.$apply(function() {
-                $scope.pngFile = element.files[0];
+                $scope.pngFile = file;
                 $scope.pngFile.loaded = true;
             });
         };
@@ -21,7 +30,20 @@ angular.module('binPngEditorApp.controllers', [])
          */
         $scope.setImage = function(image) {
             $scope.$apply(function() {
-                $scope.pngImage = image;
+                $scope.pngImageModel = image;
             });
         };
     }]);
+
+/**
+ * @class PngImage wrapper to interface with angular
+ * @param {PngImage} image
+ */
+function PngImageModel(image) {
+    var _image = image;
+    var _that = {
+        signatureHex: _image.getSignatureHex()
+    };
+    return _that;
+}
+;

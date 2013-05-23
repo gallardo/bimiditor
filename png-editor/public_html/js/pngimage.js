@@ -283,3 +283,37 @@ function PngImage(buffer) {
     console.log(_nChunks + ' chunks read');
     return _that;
 }
+
+/**
+ * Parses the image file
+ * @param {File} file
+ */
+function parseImage(file) {
+    if (!window.FileReader)
+        return; // Browser is not compatible
+
+    var reader = new FileReader();
+
+    reader.onload = function(evt) {
+        if (evt.target.readyState !== 2)
+            return;
+        if (evt.target.error) {
+            alert('Error while reading file');
+            return;
+        }
+
+        var pngImage = PngImage(evt.target.result);
+
+        angular.element($('#main')).scope().setImage(pngImage);
+
+        // Render original image
+        pngImage.renderInImg($('#original-image-img')[0]);
+
+        // Re-create GUI editor and refresh image
+        PngGUI($('#PNGEditorDiv')[0], pngImage)
+                .setImageViewport($('#edited-image-img')[0])
+                .refresh();
+    };
+
+    reader.readAsArrayBuffer(file);
+}

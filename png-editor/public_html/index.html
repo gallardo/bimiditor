@@ -113,13 +113,13 @@
                         </div><!-- /#ImagesDiv -->
 
                         <div class="row-fluid">
-                            <ng-switch on="pngFile.loaded">
+                            <div id="PNGEditorNGDiv" ng-switch on="pngFile.loaded">
                                 <div ng-switch-when="true">
                                     <header>File signature</header>
                                     <label>Signature</label>
-                                    <input name="signature-textarea" type="text" size="24" readonly="readonly" ng-model="pngImage.getSignatureHex"/>
+                                    <input name="signature-textarea" type="text" size="24" readonly="readonly" ng-model="pngImageModel.signatureHex"/>
                                 </div>
-                            </ng-switch>
+                            </div>
                             <div id="PNGEditorDiv"></div>
                         </div>
                     </div><!-- /#main -->
@@ -159,11 +159,6 @@
                                                 // An onchange="blahblah" attribute breaks the javascript
                                                 //  indentation level
                                                 ;
-        </script>
-        <script>
-            // Initialize bootstrap tooltips
-            $('#image-file-icon').tooltip();
-            $('#save-file-icon').tooltip();
         </script>
         <script>
             /**
@@ -271,11 +266,13 @@
                 };
             }
 
-            function initDragAndDrop() {
-                var filedrag = $("#file-drag")[0];
+            function initFileSelector() {
                 var fileselect = $("#image-file")[0];
                 // file select
                 fileselect.addEventListener("change", fileSelectHandler, false);
+            }
+            function initDragAndDrop() {
+                var filedrag = $("#file-drag")[0];
                 // is XHR2 available?
                 var xhr = new XMLHttpRequest();
                 if (xhr.upload) {
@@ -356,9 +353,17 @@
 
             }
 
-            if (window.File && window.FileList && window.FileReader) {
-                initDragAndDrop();
-            }
+            // Initialization -------------------------------------------------
+            $(function() {
+                initFileSelector();
+                if (window.File && window.FileList && window.FileReader) {
+                    initDragAndDrop();
+                }
+                
+                // Bootstrap tooltips
+                $('#image-file-icon').tooltip();
+                $('#save-file-icon').tooltip();
+            });
         </script>
         <!-- end scripts-->
 

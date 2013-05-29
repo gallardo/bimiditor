@@ -7,7 +7,9 @@
 */
 
 #PNGEditorDiv input,
-#PNGEditorDiv textarea {
+#PNGEditorDiv textarea,
+#PNGEditorNGDiv input,
+#PNGEditorNGDiv textarea {
     font-family: monospace;
 }
 #filedrag
@@ -31,4 +33,26 @@
 }
 footer {
     background-color: #f5f5f5;
+}
+
+// Toolbar
+#LoadFileDiv {
+    color: red;
+}
+#EditedImageDiv form label,
+#LoadFileDiv form label {
+    display: inline;
+}
+
+.icon-lenna {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-top: 1px;
+  *margin-right: .3em;
+  line-height: 14px;
+  vertical-align: text-top;
+  background-image: url("../img/Lenna_64.png");
+  background-size: 14px 14px;
+  background-position: 0;
 }

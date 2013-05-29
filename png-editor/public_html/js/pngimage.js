@@ -268,6 +268,10 @@ function PngImage(buffer) {
          */
         getChunks: function() {
             return _chunks;
+        },
+        // TODO:
+        getDownloadUrl: function() {
+            return 'data:application/octet-stream;base64,' + 'SG9sYSwgbXVuZG8hCg==';
         }
     };
     // read chunks
@@ -285,16 +289,18 @@ function PngImage(buffer) {
 }
 
 /**
- * Parses the image file
+ * Reads the image file into a <tt>PngImage</tt> and calls <tt>setPngImage</tt>
+ * with it as parameter.
+ * 
  * @param {File} file
+ * @param {function(PngImage)} callback will be called with the fresh-built
+ *       pngImage as parameter
  */
-function parseImage(file) {
-    if (!window.FileReader)
-        return; // Browser is not compatible
+function readImage(file, setPngImage) {
+    var _reader = new FileReader();
+    var _setPngImage = setPngImage;
 
-    var reader = new FileReader();
-
-    reader.onload = function(evt) {
+    _reader.onload = function(evt) {
         if (evt.target.readyState !== 2)
             return;
         if (evt.target.error) {
@@ -303,17 +309,13 @@ function parseImage(file) {
         }
 
         var pngImage = PngImage(evt.target.result);
+        _setPngImage(pngImage);
 
-        angular.element($('#main')).scope().setImage(pngImage);
-
-        // Render original image
-        pngImage.renderInImg($('#original-image-img')[0]);
-
-        // Re-create GUI editor and refresh image
+//        // Re-create GUI editor and refresh image
         PngGUI($('#PNGEditorDiv')[0], pngImage)
                 .setImageViewport($('#edited-image-img')[0])
                 .refresh();
     };
 
-    reader.readAsArrayBuffer(file);
+    _reader.readAsArrayBuffer(file);
 }

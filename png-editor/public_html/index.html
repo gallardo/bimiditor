@@ -75,9 +75,10 @@
                             <div id="FileInfoDiv" class="span12"></div>
                             <div>
                                 <h2>File info</h2>
-                                <p>File name: {{pngFile.name}}</p>
-                                <p>File type: {{pngFile.type}}</p>
-                                <p>File size: {{pngFile.size}} bytes</p>
+                                <p>Name: <strong id="pngFileNameValue">{{pngFile.name}}</strong></p>
+                                <p>Type: <strong id="pngFileTypeValue">{{pngFile.type}}</strong></p>
+                                <p>Size: <strong id="pngFileSizeValue">{{pngFile.size}}</strong> bytes</p>
+                                <p>Last modified: <strong id="pngFileLastModifiedDateValue">{{pngFile.lastModifiedDate}}</strong></p>
                             </div>
                         </div>
 
@@ -88,7 +89,7 @@
                                     <form>
                                         <fieldset>
                                             <legend class="hidden"></legend>
-                                            <label><i id="save-file-icon" class="icon-download" data-toogle="tooltip" title="Save edited image (not yet available)"></i></label>
+                                            <label><a><i id="save-file-icon" class="icon-download" data-toogle="tooltip" title="Save edited image (not yet available)"></i></a></label>
                                         </fieldset>
                                     </form>
                                 </div>
@@ -103,6 +104,7 @@
                                             <legend class="hidden">PNG file</legend>
                                             <label for="image-file"><i id="image-file-icon" class="icon-folder-open" data-toogle="tooltip" title="Select a file to load"></i></label>
                                             <div class="hidden"><input type="file" id="image-file" name="image-file" multiple=""/></div>
+                                            <label><i id="get-example-file-icon" class="icon-lenna" data-toogle="tooltip" title="Load example image" ng-click="loadLenna()"></i></label>
                                         </fieldset>
                                     </form>
                                 </div>
@@ -117,7 +119,7 @@
                                 <div ng-switch-when="true">
                                     <header>File signature</header>
                                     <label>Signature</label>
-                                    <input name="signature-textarea" type="text" size="24" readonly="readonly" ng-model="pngImageModel.signatureHex"/>
+                                    <input name="signature-textarea" type="text" size="24" readonly="readonly" ng-model="pngEditedImage.signatureHex"/>
                                 </div>
                             </div>
                             <div id="PNGEditorDiv"></div>
@@ -139,8 +141,9 @@
         <script>window.jQuery || document.write('<script src="js/libs/jquery-1.7.1.min.js"><\/script>');</script>
 
         <!-- Grab Google CDN's AngularJs, with a protocol relative URL; fall back to local if necessary -->
-        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"></script>
-        <script>window.angular || document.write('<script src="js/libs/angularjs-1.0.6/angular.min.js"><\/script>');</script>
+        <!-- Angular 1.0.* doesn't support $http...responseType. See https://github.com/angular/angular.js/issues/1013 -->
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
+        <script>window.angular || document.write('<script src="js/libs/angularjs-1.1.5/angular.min.js"><\/script>');</script>
 
         <!-- Bootstrap -->
         <script src="bootstrap/js/bootstrap.min.js"></script>

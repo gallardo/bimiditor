@@ -1,6 +1,14 @@
 language: node_js
 node_js:
-  - 0.10
+  - "0.10"
+
+env:
+  global:
+    # See http://about.travis-ci.org/docs/user/encryption-keys/
+    secure: |-
+      bcpk162HGtlg4JY43YpoTDPGWfoTMAPnozjw08TSUkFpO8mG+kEb92GUqYFp
+      yb7Tlfz3Jk/yE+NPbMfcxjOHy6ncO9xjcs7OYZAO2RgdaatHFIibKoMBhuPz
+      1OfVVd1Rw1/KNuOOFt/65VdNsLGecYwA7/SVuQ5EIavY29rmISM=
 
 before_script:
   - export DISPLAY=:99.0

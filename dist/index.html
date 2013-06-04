@@ -1,0 +1,332 @@
+<!doctype html>
+<!-- Conditional comment for mobile ie7 blogs.msdn.com/b/iemobile/ -->
+<!--[if IEMobile 7 ]>    <html class="no-js iem7" lang="en" ng-app="binPngEditorApp" id="ng-app"> <![endif]-->
+<!--[if (gt IEMobile 7)|!(IEMobile)]><!--> <html class="no-js" lang="en" ng-app="binPngEditorApp" id="ng-app"> <!--<![endif]-->
+
+    <head>
+        <meta charset="utf-8">
+
+        <title>PNG-Editor</title>
+        <meta name="description" content="">
+
+        <!-- Mobile viewport optimization h5bp.com/ad -->
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <!-- Home screen icon  Mathias Bynens mathiasbynens.be/notes/touch-icons -->
+        <!-- For iPhone 4 with high-resolution Retina display: -->
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/h/apple-touch-icon.png">
+        <!-- For first-generation iPad: -->
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/m/apple-touch-icon.png">
+        <!-- For non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
+        <link rel="apple-touch-icon-precomposed" href="img/l/apple-touch-icon-precomposed.png">
+        <!-- For nokia devices: -->
+        <link rel="shortcut icon" href="img/l/apple-touch-icon.png">
+
+        <!-- iOS web app, delete if not needed. https://github.com/h5bp/mobile-boilerplate/issues/94 -->
+        <!-- <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black"> -->
+        <!-- <script>(function(){var a;if(navigator.platform==="iPad"){a=window.orientation!==90||window.orientation===-90?"img/startup-tablet-landscape.png":"img/startup-tablet-portrait.png"}else{a=window.devicePixelRatio===2?"img/startup-retina.png":"img/startup.png"}document.write('<link rel="apple-touch-startup-image" href="'+a+'"/>')})()</script> -->
+
+        <!-- The script prevents links from opening in mobile safari. https://gist.github.com/1042026 -->
+        <!-- <script>(function(a,b,c){if(c in b&&b[c]){var d,e=a.location,f=/^(a|html)$/i;a.addEventListener("click",function(a){d=a.target;while(!f.test(d.nodeName))d=d.parentNode;"href"in d&&(d.href.indexOf("http")||~d.href.indexOf(e.host))&&(a.preventDefault(),e.href=d.href)},!1)}})(document,window.navigator,"standalone")</script> -->
+
+        <!-- Mobile IE allows us to activate ClearType technology for smoothing fonts for easy reading -->
+        <meta http-equiv="cleartype" content="on">
+
+        <!-- more tags for your 'head' to consider h5bp.com/d/head-Tips -->
+
+        <link href="css/main.css" media="screen">
+
+        <!-- Bootstrap -->
+        <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+        <link href="bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
+
+        <!-- Main Stylesheet -->
+        <link rel="stylesheet" href="css/style.css">
+        <link rel="stylesheet" href="css/main.css">
+
+        <!-- All JavaScript at the bottom, except for Modernizr which enables HTML5 elements & feature detects -->
+        <script src="lib/modernizr-2.0.6.min.js"></script>
+    </head>
+
+    <body> 
+        <div id="wrap">
+            <header class="hero-unit">
+                <h1>binPNG Editor</h1>
+                <p>A binary PNG editor to learn basic image-processing algorithms and technics</p>
+            </header>
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <nav class="span2 visible-tablet visible-desktop">
+                        <ul class="nav nav-list navbar-inner affix">
+                            <li class="nav-header">Jump to</li>
+                            <li><a href="#FileInfoDiv">File info</a></li>
+                            <li><a href="#EditedImageDiv">Edited png</a></li>
+                            <li><a href="#OriginalImageDiv">Original png</a></li>
+                            <li><a href="#PNGEditorDiv">PNG editor</a></li>
+                        </ul>
+                    </nav>
+
+                    <div id="main" class="span10" role="main" ng-controller="BinPngEditorCtrl">
+                        <!-- File load status -->
+                        <div class="row-fluid">
+                            <div id="FileInfoDiv" class="span12"></div>
+                            <div>
+                                <h2>File info</h2>
+                                <p>Name: <strong id="pngFileNameValue">{{pngFile.name}}</strong></p>
+                                <p>Type: <strong id="pngFileTypeValue">{{pngFile.type}}</strong></p>
+                                <p>Size: <strong id="pngFileSizeValue">{{pngFile.size}}</strong> bytes</p>
+                                <p>Last modified: <strong id="pngFileLastModifiedDateValue">{{pngFile.lastModifiedDate}}</strong></p>
+                            </div>
+                        </div>
+
+                        <div id="ImagesDiv" class="row-fluid">
+                            <div id="EditedImageDiv" class="span6">
+                                <h2>Edited image</h2>
+                                <div>
+                                    <form>
+                                        <fieldset>
+                                            <legend class="hidden"></legend>
+                                            <label><a><i id="save-file-icon" class="icon-download" data-toogle="tooltip" title="Save edited image (not yet available)"></i></a></label>
+                                        </fieldset>
+                                    </form>
+                                </div>
+                                <img id="edited-image-img" alt="Edited Image" width="100" height="100" src="" class="img-polaroid" />
+                            </div>
+
+                            <div id="OriginalImageDiv" class="span6">
+                                <h2>Original image</h2>
+                                <div id="LoadFileDiv">
+                                    <form name="file-form">
+                                        <fieldset>
+                                            <legend class="hidden">PNG file</legend>
+                                            <label for="image-file"><i id="image-file-icon" class="icon-folder-open" data-toogle="tooltip" title="Select a file to load"></i></label>
+                                            <div class="hidden"><input type="file" id="image-file" name="image-file" multiple=""/></div>
+                                            <label><i id="get-example-file-icon" class="icon-lenna" data-toogle="tooltip" title="Load example image" ng-click="loadLenna()"></i></label>
+                                        </fieldset>
+                                    </form>
+                                </div>
+                                <div id="file-drag">
+                                    <img id="original-image-img" alt="Original Image" width="100" height="100" src="" class="img-polaroid" />
+                                </div>
+                            </div>
+                        </div><!-- /#ImagesDiv -->
+
+                        <div class="row-fluid">
+                            <div id="PNGEditorNGDiv" ng-switch on="pngFile.loaded">
+                                <div ng-switch-when="true">
+                                    <header>File signature</header>
+                                    <label>Signature</label>
+                                    <input name="signature-textarea" type="text" size="24" readonly="readonly" ng-model="pngEditedImage.signatureHex"/>
+                                </div>
+                            </div>
+                            <div id="PNGEditorDiv"></div>
+                        </div>
+                    </div><!-- /#main -->
+                </div> <!-- /.row-fluid -->
+            </div> <!-- /.container-fluid -->
+        </div>
+
+        <footer class="navbar navbar-fixed-bottom">
+            <hr/>
+            <p class="text-center"><small>&copy; 2013 ag</small></p>
+            <p class="text-center"><small><a href="http://glyphicons.com">Glyphicons Free</a> licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</small></p>
+        </footer>
+
+        <!-- JavaScript at the bottom for fast page loading -->
+        <!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if necessary -->
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="js/libs/jquery-1.7.1.min.js"><\/script>');</script>
+
+        <!-- Grab Google CDN's AngularJs, with a protocol relative URL; fall back to local if necessary -->
+        <!-- Angular 1.0.* doesn't support $http...responseType. See https://github.com/angular/angular.js/issues/1013 -->
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
+        <script>window.angular || document.write('<script src="js/libs/angularjs-1.1.5/angular.min.js"><\/script>');</script>
+
+        <!-- Bootstrap -->
+        <script src="bootstrap/js/bootstrap.min.js"></script>
+
+        <!-- scripts concatenated and minified via ant build script-->
+        <script src="js/helper.js"></script>
+        <script src="js/app.js"></script>
+        <script src="js/controllers.js"></script>
+        <script src="js/directives.js"></script>
+        <script src="js/filters.js"></script>
+        <script src="js/services.js"></script>
+        <script src="js/pngimage.js"></script>
+        <script>
+            // I need this script section to work-around a NB formatting bug:
+            // https://netbeans.org/bugzilla/show_bug.cgi?id=229658
+            // An onchange="blahblah" attribute breaks the javascript
+            //  indentation level
+            ;
+        </script>
+        <script>
+            /**
+             * @class Provides the API to create the PNG GUI
+             * @param {Element} gUIDiv where to append the html
+             * @param {PngImage} pngImage
+             * @returns {PngEditor} this for method chaining
+             */
+            function PngGUI(gUIDiv, pngImage) {
+                var _pngImage = pngImage;
+                var _viewportJQuery;
+
+                /**
+                 * @returns {Element}
+                 */
+                var _createSignatureGUI = function() {
+                    var div = $('<div>'
+                            + '<header>File signature</header>'
+                            + '<label>Signature</label>'
+                            + '</div>');
+                    div.append(
+                            $('<input name="signature-textarea" type="text" size="24" readonly="readonly"/>')
+                            .attr('value', _pngImage.getSignatureHex()));
+                    return div;
+                };
+
+                /**
+                 * 
+                 * @param {Chunk} chunk
+                 * @param {Number} index which chunk it is
+                 * @returns {jQuery} GUI element
+                 */
+                var _createChunkGUI = function(chunk, index) {
+                    var div = $('<div><header>Chunk ' + index + ': ' + chunk.getName() + '</header>');
+
+                    var LENGTH_WIDTH = Math.ceil(Math.log(Math.pow(2, 32) - 1) / Math.log(10)); // Max length
+                    // Length
+                    var lengthHexInput = $('<input name="chunk-0-length-textarea" type="text" size="12" value="' + chunk.getLengthHex() + '"/>');
+                    lengthHexInput.on("change", function() {
+                        chunk.setLengthHex(this.value);
+                    });
+                    chunk.addListener(function() {
+                        lengthHexInput.val(chunk.getLengthHex());
+                    });
+                    console.log("Chunks length: " + chunk.getLengthDec());
+                    var lengthDecInput = $('<input name="chunk-0-length-ascii-textarea" type="text" size="' + LENGTH_WIDTH + '" value="' + chunk.getLengthDec() + '"/><sub>bytes</sub>');
+                    lengthDecInput.on("change", function() {
+                        chunk.setLengthDec(this.value);
+                    });
+                    chunk.addListener(function() {
+                        lengthDecInput.val(chunk.getLengthDec());
+                    });
+                    div.append($('<label>Length</label>'))
+                            .append(lengthHexInput)
+                            .append(lengthDecInput);
+
+                    // Type/Name
+                    div.append($('<label>Type/Name</label>'))
+                            .append($('<input name="chunk-0-type-textarea" type="text" size="12" value="' + chunk.getNameHex() + '"/>'))
+                            .append($('<input name="chunk-0-type-ascii-textarea" type="text" size="4" value="' + chunk.getName() + '"/><sub>ASCII</sub></label>'));
+
+                    // Data
+                    div.append($('<label>Data</label>'))
+                            .append($('<textarea name="chunk-0-data-textarea" rows="4" cols="50">' + chunk.getDataHex() + '</textarea>'));
+
+                    // CRC
+                    div.append($('<label>CRC</label>'))
+                            .append($('<input name="chunk-0-crc-textarea" type="text" size="12" value="' + chunk.getCrcHex() + '"/>'))
+                            .append($('<input name="chunk-0-crc-ascii-textarea" type="text" size="10"  value="' + chunk.getCrc() + '"/><sub>dec</sub>'));
+
+                    return div;
+                };
+
+                var _createChunksGUI = function() {
+                    var div = $('<div><div/>');
+                    var names = Object.keys(_pngImage.getChunks());
+                    console.log('chunks:' + names.length);
+                    for (var i = 0; i < names.length; ++i) {
+                        div.append(_createChunkGUI(_pngImage.getChunks()[names[i]], i));
+                    }
+                    return div;
+                };
+
+                var _redraw = function() {
+                    _pngImage.renderInImg(_viewportJQuery[0]);
+                };
+                _pngImage.addListener(_redraw);
+                var _element = $('<div><div/>')
+                        .append(_createSignatureGUI())
+                        .append(_createChunksGUI());
+
+                return {
+                    /**
+                     * @param {Element} viewportTag
+                     * @return {PngEditor} this for method chaining
+                     */
+                    setImageViewport: function(viewportTag) {
+                        _viewportJQuery = $(viewportTag);
+                        _redraw();
+                        return this;
+                    },
+                    refresh: function() {
+                        $(gUIDiv).empty().append(_element);
+                    }
+                };
+            }
+
+            function initFileSelector() {
+                var fileselect = $("#image-file")[0];
+                // file select
+                fileselect.addEventListener("change", fileSelectHandler, false);
+            }
+
+            function initDragAndDrop() {
+                var filedrag = $("#file-drag")[0];
+                // is XHR2 available?
+                var xhr = new XMLHttpRequest();
+                if (xhr.upload) {
+                    // file drop
+                    filedrag.addEventListener("dragover", fileDragHover, false);
+                    filedrag.addEventListener("dragleave", fileDragHover, false);
+                    filedrag.addEventListener("drop", fileSelectHandler, false);
+                    filedrag.style.display = "block";
+                }
+            }
+
+            function fileDragHover(e) {
+                e.stopPropagation();
+                e.preventDefault();
+                e.target.className = (e.type === "dragover" ? "hover" : "");
+            }
+
+            /**
+             * File selection
+             * @param {Event} e <tt>change</tt> event fired from the
+             *      <tt>input type="file"</tt> or <tt>mouse</tt> event fired
+             *      from the drag-and-drop target div.
+             */
+            function fileSelectHandler(e) {
+                // cancel event and hover styling
+                fileDragHover(e);
+                // fetch FileList object:
+                // - if change event: e.target.files
+                // - if mouse event: e.dataTransfer.files
+                var files = e.target.files || e.dataTransfer.files;
+
+                // Set controller's file
+                angular.element($('#main')).scope().setFile(files[0]);
+            }
+
+            // Initialization -------------------------------------------------
+            $(function() {
+                if (window.File && window.FileList && window.FileReader) {
+                    initFileSelector();
+                    initDragAndDrop();
+                }
+
+                // Bootstrap tooltips
+                $('#image-file-icon').tooltip();
+                $('#save-file-icon').tooltip();
+            });
+        </script>
+        <!-- end scripts-->
+
+        <!-- Debugger - remove for production -->
+        <!-- <script src="https://getfirebug.com/firebug-lite.js"></script> -->
+    </body>
+</html>

@@ -24,3 +24,6 @@ branches:
 script:
   - karma start png-editor/config/karma.conf.js --no-auto-watch --single-run --reporters=dots --browsers=Firefox
   - karma start png-editor/config/karma-e2e.conf.js --reporters=dots --browsers=Firefox
+
+after_success:
+  - png-editor/scripts/post_build.sh

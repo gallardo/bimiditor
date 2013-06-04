@@ -21,18 +21,13 @@ if [ "$TRAVIS_PULL_REQUEST" == "false" ] &&  [ "$TRAVIS_REPO_SLUG" == "gallardo/
 	#Update working example
 	if [ "$TRAVIS_BRANCH" == "master" ]; then
 		#Copy public_html in a temporary location
-		pwd
-		ls -la
 		echo -e "Copying png-editor/public_html into $HOME/tmp_dist/"
 		cp -R png-editor/public_html $HOME/tmp_dist/
 
 		echo -e "Updating GitHub's pages (dist)...\n"
 
-        git version
-        git show-ref
-        git fetch upstream gh-pages
+        git fetch upstream
 		git checkout gh-pages
-		echo -e "gh-pages checked-out"
 
 		# Replace the dist folder
 		rm -rf dist/

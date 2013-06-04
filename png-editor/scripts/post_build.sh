@@ -9,7 +9,7 @@ function error_exit
 	exit 1
 }
 
-if [ "$TRAVIS_PULL_REQUEST" == "false" ] &&  [ "$TRAVIS_REPO_SLUG" == "travis-ci/obimp" ]; then
+if [ "$TRAVIS_PULL_REQUEST" == "false" ] &&  [ "$TRAVIS_REPO_SLUG" == "gallardo/obimp" ]; then
 
 	#Set git user
 	git config --global user.email "ag-travis-ci@gmail.com"

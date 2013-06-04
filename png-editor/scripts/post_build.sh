@@ -29,11 +29,13 @@ if [ "$TRAVIS_PULL_REQUEST" == "false" ] &&  [ "$TRAVIS_REPO_SLUG" == "gallardo/
 		echo -e "Updating GitHub's pages (dist)...\n"
 
         git version
+        git show-ref
+        git fetch upstream gh-pages
 		git checkout gh-pages
 		echo -e "gh-pages checked-out"
 
 		# Replace the dist folder
-		rm -r dist/
+		rm -rf dist/
 		cp -Rf $HOME/tmp_dist/ dist/
 		git add -f dist/
 		git commit -q -m "Travis build $TRAVIS_BUILD_NUMBER pushed to gh-pages"

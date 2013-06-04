@@ -20,14 +20,21 @@ if [ "$TRAVIS_PULL_REQUEST" == "false" ] &&  [ "$TRAVIS_REPO_SLUG" == "gallardo/
 
 	#Update working example
 	if [ "$TRAVIS_BRANCH" == "master" ]; then
-		echo -e "Updating public_html...\n"
+		#Copy public_html in a temporary location
+		cp -R png-editor/public_html $HOME/tmp_dist/
 
-		git checkout -B gh-pages
-		git add -f public_html/.
+		echo -e "Updating GitHub's pages (dist)...\n"
+
+		git checkout gh-pages
+
+		# Replace the dist folder
+		rm -r dist/
+		cp -Rf $HOME/tmp_dist/ dist/
+		git add -f dist/
 		git commit -q -m "Travis build $TRAVIS_BUILD_NUMBER pushed to gh-pages"
 		git push -fq upstream gh-pages 2> /dev/null || error_exit "Error updating working examples"
 
-		echo -e "Finished updating public_html\n"
+		echo -e "Finished GitHub's pages (dist)\n"
 	fi
 fi
 

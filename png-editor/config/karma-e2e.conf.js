@@ -5,7 +5,8 @@ files = [
   ANGULAR_SCENARIO_ADAPTER,
   'test/data/**/*.js',
   'test/e2e/**/*.js',
-  {pattern: 'public_html/index.html', watched: true, included: false, served: false}
+  {pattern: 'public_html/index.html', watched: true, included: false, served: false},
+  {pattern: 'public_html/js/**/*.js', watched: true, included: false, served: false}
 ];
 
 //  Enable or disable watching files and executing the tests whenever one of these files changes.

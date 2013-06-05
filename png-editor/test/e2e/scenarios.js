@@ -33,6 +33,10 @@ describe('binPNGEditorTest', function() {
       .toBe('--');
     });
 
+    it('should not display the signature if no img loaded', function() {
+      expect(element('#signature-textarea').count()).toBe(0);
+    });
+
     // AG 2013-05-24: After several hours, I decided to give up:
     // it seems that there is no way to simulate the file upload.
     // The input.files cannot be modified by code, and it is not
@@ -63,6 +67,16 @@ describe('binPNGEditorTest', function() {
     */
 
     it('should create the file from the example', function() {
+      element('#get-example-file-icon').click();
+      expect(element('#pngFileNameValue').text())
+      .toBe(LENNA_64.name);
+      expect(element('#pngFileTypeValue').text())
+      .toBe(LENNA_64.type);
+    });
 
+    it('should display the file signature if example file loaded', function() {
+      element('#get-example-file-icon').click();
+      expect(element('#signature-textarea').count()).toBeGreaterThan(0);
+      expect(element('#signature-textarea').val()).toBe(PNG.signature_hex);
     });
 });

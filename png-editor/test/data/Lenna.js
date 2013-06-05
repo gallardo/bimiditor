@@ -30,4 +30,12 @@ LENNA.height = 512;
 LENNA.width = 512;
 LENNA.chunksLength = 4;
 
-PNG_SIGNATURE_HEX = "89 50 4E 47 0D 0A 1A 0A "
+PNG_SIGNATURE_HEX = "89 50 4E 47 0D 0A 1A 0A ";
+
+/**
+ * PNG 64x64 pixels image of Lenna
+ */
+var LENNA_64= {
+	name: 'Lenna_64.png',
+	type: 'image/png'
+};

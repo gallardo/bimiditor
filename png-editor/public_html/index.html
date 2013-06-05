@@ -115,14 +115,18 @@
                         </div><!-- /#ImagesDiv -->
 
                         <div class="row-fluid">
-                            <div id="PNGEditorNGDiv" ng-switch on="pngFile.loaded">
+                            <div id="PNGEditorDiv" ng-switch on="pngFile.loaded">
+                                <!-- XXX: When https://github.com/angular/angular.js/issues/768 is implemented, it should be possible to write <input model="pngEditedImage.@signatureHex" /> -->
                                 <div ng-switch-when="true">
                                     <header>File signature</header>
                                     <label>Signature</label>
-                                    <input name="signature-textarea" type="text" size="24" readonly="readonly" ng-model="pngEditedImage.signatureHex"/>
+                                    <input id="signature-textarea" name="signature-textarea" type="text" size="24" readonlyXXX="readonly" ng-model="pngEditedImage.signatureHex"/>
+                                </div>
+                                <div ng-switch-default>
+                                    <h2>No image loaded yet</h2>
                                 </div>
                             </div>
-                            <div id="PNGEditorDiv"></div>
+                            <!--<div id="PNGEditorDiv"></div>-->
                         </div>
                     </div><!-- /#main -->
                 </div> <!-- /.row-fluid -->
@@ -176,6 +180,7 @@
 
                 /**
                  * @returns {Element}
+                 * @deprecated: already angularized
                  */
                 var _createSignatureGUI = function() {
                     var div = $('<div>'
@@ -250,7 +255,7 @@
                 };
                 _pngImage.addListener(_redraw);
                 var _element = $('<div><div/>')
-                        .append(_createSignatureGUI())
+//                        .append(_createSignatureGUI())  Already angularized
                         .append(_createChunksGUI());
 
                 return {

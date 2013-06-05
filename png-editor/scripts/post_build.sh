@@ -21,14 +21,16 @@ if [ "$TRAVIS_PULL_REQUEST" == "false" ] &&  [ "$TRAVIS_REPO_SLUG" == "gallardo/
 	#Update working example
 	if [ "$TRAVIS_BRANCH" == "master" ]; then
 		#Copy public_html in a temporary location
+		echo -e "Copying png-editor/public_html into $HOME/tmp_dist/"
 		cp -R png-editor/public_html $HOME/tmp_dist/
 
 		echo -e "Updating GitHub's pages (dist)...\n"
 
+        git fetch upstream
 		git checkout gh-pages
 
 		# Replace the dist folder
-		rm -r dist/
+		rm -rf dist/
 		cp -Rf $HOME/tmp_dist/ dist/
 		git add -f dist/
 		git commit -q -m "Travis build $TRAVIS_BUILD_NUMBER pushed to gh-pages"

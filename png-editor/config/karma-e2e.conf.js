@@ -3,7 +3,9 @@ basePath = '../';
 files = [
   ANGULAR_SCENARIO,
   ANGULAR_SCENARIO_ADAPTER,
-  'test/e2e/**/*.js'
+  'test/data/**/*.js',
+  'test/e2e/**/*.js',
+  {pattern: 'public_html/index.html', watched: true, included: false, served: false}
 ];
 
 //  Enable or disable watching files and executing the tests whenever one of these files changes.

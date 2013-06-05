@@ -12,10 +12,10 @@ describe("PngImage suite", function() {
     });
     it("should read the Lenna png image", function() {
         var pngImage = PngImage(LENNA);
-        expect(pngImage.getWidth()).toBe(LENNA.width);
-        expect(pngImage.getHeight()).toBe(LENNA.height);
-        expect(Object.keys(pngImage.getChunks()).length)
+        expect(pngImage.width).toBe(LENNA.width);
+        expect(pngImage.height).toBe(LENNA.height);
+        expect(Object.keys(pngImage.chunks).length)
                 .toBe(LENNA.chunksLength);
-        expect(pngImage.getSignatureHex()).toBe(PNG_SIGNATURE_HEX);
+        expect(pngImage.signatureHex).toBe(PNG_SIGNATURE_HEX);
     });
 });

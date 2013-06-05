@@ -124,7 +124,7 @@ function Chunk(buffer, start) {
         /**
          * @returns {String}
          */
-        getLengthHex: function() {
+        get lengthHex() {
             return batohexs(_bytes.subarray(_chunkStartPtr, _chunkStartPtr + 4));
         },
         /**
@@ -134,7 +134,7 @@ function Chunk(buffer, start) {
          *       hexadecimal notation
          * @returns {Chunk} this for method chaining
          */
-        setLengthHex: function(hex) {
+        set lengthHex(hex) {
             var hexBytes = hexstoba(hex);
             var _ptr = _chunkStartPtr;
             for (var i = 0; i < hexBytes.length; ++i, ++_ptr) {
@@ -146,7 +146,7 @@ function Chunk(buffer, start) {
         /**
          * @returns {String}
          */
-        getLengthDec: function() {
+        get lengthDec() {
             return _dataView.getInt32(_chunkStartPtr);
         },
         /**
@@ -155,7 +155,7 @@ function Chunk(buffer, start) {
          * @param {Number} length length of the chunk in bytes
          * @returns {Chunk} this for method chaining
          */
-        setLengthDec: function(length) {
+        set lengthDec(length) {
             _dataView.setUint32(_chunkStartPtr, length);
             _notifyListeners();
             return this;
@@ -163,37 +163,37 @@ function Chunk(buffer, start) {
         /**
          * @returns {Number} chunk's length in bytes
          */
-        getChunksLength: function() {
+        get chunksLength() {
             return _getDataLength() + 4 + 4 + 4; // length + name + crc
         },
         /**
          * @returns {String}
          */
-        getNameHex: function() {
+        get nameHex() {
             return batohexs(_bytes.subarray(_chunkStartPtr + 4, _chunkStartPtr + 8));
         },
         /**
          * @returns {String}
          */
-        getName: function() {
+        get name() {
             return batos(_bytes.subarray(_chunkStartPtr + 4, _chunkStartPtr + 8));
         },
         /**
          * @returns {String}
          */
-        getDataHex: function() {
+        get dataHex() {
             return batohexs(_bytes.subarray(_chunkStartPtr + 8, _chunkStartPtr + 8 + _getDataLength()));
         },
         /**
          * @returns {String}
          */
-        getCrcHex: function() {
+        get crcHex() {
             return batohexs(_bytes.subarray(_chunkStartPtr + 8 + _getDataLength(), _chunkStartPtr + 8 + _getDataLength() + 4));
         },
         /**
          * @returns {Number}
          */
-        getCrc: function() {
+        get crc() {
             return _dataView.getInt32(_chunkStartPtr + 8 + _getDataLength());
         }
     };
@@ -279,9 +279,9 @@ function PngImage(buffer) {
     while (_ptr < _bytes.length) {
         var c = Chunk(buffer, _ptr);
         c.addListener(_that.notifyListeners);
-        console.log('Read chunk named "' + c.getName() + '" of length ' + c.getChunksLength() + ' bytes.');
-        _chunks[c.getName()] = c;
-        _ptr += c.getChunksLength();
+        console.log('Read chunk named "' + c.name + '" of length ' + c.chunksLength + ' bytes.');
+        _chunks[c.name] = c;
+        _ptr += c.chunksLength;
         ++_nChunks;
     }
     console.log(_nChunks + ' chunks read');

@@ -79,4 +79,9 @@ describe('binPNGEditorTest', function() {
       expect(element('#signature-textarea').count()).toBeGreaterThan(0);
       expect(element('#signature-textarea').val()).toBe(PNG.signature_hex);
     });
+
+    it('should render 5 chunks for the lenna example', function() {
+      element('#get-example-file-icon').click();
+      expect(element('div[id^=chunk-]').count()).toBe(5);
+    })
 });

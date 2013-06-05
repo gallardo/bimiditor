@@ -242,35 +242,35 @@ function PngImage(buffer) {
         renderInImg: function(tag) {
             var encodedBytes = batobase64(_bytes);
             tag.setAttribute('src', 'data:image/png;base64,' + encodedBytes);
-            tag.setAttribute('width', '' + this.getWidth());
-            tag.setAttribute('height', '' + this.getHeight());
+            tag.setAttribute('width', '' + this.width);
+            tag.setAttribute('height', '' + this.height);
         },
         /**
          * @returns {String}
          */
-        getSignatureHex: function() {
+        get signatureHex() {
             return batohexs(_signature);
         },
         /**
          * @returns {Number}
          */
-        getWidth: function() {
+        get width() {
             return _width;
         },
         /**
          * @returns {Number}
          */
-        getHeight: function() {
+        get height() {
             return _height;
         },
         /**
          * @returns {Array} map of chunks
          */
-        getChunks: function() {
+        get chunks() {
             return _chunks;
         },
         // TODO:
-        getDownloadUrl: function() {
+        get downloadUrl() {
             return 'data:application/octet-stream;base64,' + 'SG9sYSwgbXVuZG8hCg==';
         }
     };
@@ -312,9 +312,10 @@ function readImage(file, setPngImage) {
         _setPngImage(pngImage);
 
 //        // Re-create GUI editor and refresh image
-        PngGUI($('#PNGEditorDiv')[0], pngImage)
-                .setImageViewport($('#edited-image-img')[0])
-                .refresh();
+        // TODO: angularize
+        // PngGUI($('#PNGEditorDiv')[0], pngImage)
+        //         .setImageViewport($('#edited-image-img')[0])
+        //         .refresh();
     };
 
     _reader.readAsArrayBuffer(file);

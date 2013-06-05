@@ -115,14 +115,33 @@
                         </div><!-- /#ImagesDiv -->
 
                         <div class="row-fluid">
-                            <div id="PNGEditorNGDiv" ng-switch on="pngFile.loaded">
+                            <div id="PNGEditorDiv" ng-switch on="pngFile.loaded">
+                                <!-- XXX: When https://github.com/angular/angular.js/issues/768 is implemented, it should be possible to write <input model="pngEditedImage.@signatureHex" /> -->
                                 <div ng-switch-when="true">
                                     <header>File signature</header>
                                     <label>Signature</label>
-                                    <input name="signature-textarea" type="text" size="24" readonly="readonly" ng-model="pngEditedImage.signatureHex"/>
+                                    <input id="signature-textarea" name="signature-textarea" type="text" size="24" readonlyXXX="readonly" ng-model="pngEditedImage.signatureHex"/>
+
+                                    <div ng-repeat="chunk in pngEditedImage.chunks" id="chunk-{{$index + 1}}">
+                                        <header>Chunk {{$index + 1}}: {{chunk.name}}</header>
+                                        <label>Length</label>
+                                        <input name="chunk-{{$index + 1}}-length-textarea" type="text" size="12" ng-model="chunk.lengthHex"/>
+                                        <input name="chunk-{{$index + 1}}-length-ascii-textarea" type="text" size="{{WIDTH_32BIT_BASE10}}" ng-model="chunk.lengthDec"/><sub>bytes</sub>
+                                        <label>Type/Name</label>
+                                        <input name="chunk-{{$index + 1}}-type-textarea" type="text" size="12" value="{{chunk.nameHex}}"/>
+                                        <input name="chunk-{{$index + 1}}-type-ascii-textarea" type="text" size="4" value="{{chunk.name}}"/><sub>ASCII</sub>
+                                        <label>Data</label>
+                                        <textarea name="chunk-{{$index + 1}}-data-textarea" rows="4" cols="50">{{chunk.dataHex}}</textarea>
+                                        <label>CRC</label>
+                                        <input name="chunk-0-crc-textarea" type="text" size="12" value="{{chunk.crcHex}}"/>
+                                        <input name="chunk-0-crc-ascii-textarea" type="text" size="10"  value="{{chunk.crc}}"/><sub>dec</sub>
+                                    </div>
+                                </div>
+                                <div ng-switch-default>
+                                    <h2>No image loaded yet</h2>
                                 </div>
                             </div>
-                            <div id="PNGEditorDiv"></div>
+                            <!--<div id="PNGEditorDiv"></div>-->
                         </div>
                     </div><!-- /#main -->
                 </div> <!-- /.row-fluid -->
@@ -174,84 +193,10 @@
                 var _pngImage = pngImage;
                 var _viewportJQuery;
 
-                /**
-                 * @returns {Element}
-                 */
-                var _createSignatureGUI = function() {
-                    var div = $('<div>'
-                            + '<header>File signature</header>'
-                            + '<label>Signature</label>'
-                            + '</div>');
-                    div.append(
-                            $('<input name="signature-textarea" type="text" size="24" readonly="readonly"/>')
-                            .attr('value', _pngImage.getSignatureHex()));
-                    return div;
-                };
-
-                /**
-                 * 
-                 * @param {Chunk} chunk
-                 * @param {Number} index which chunk it is
-                 * @returns {jQuery} GUI element
-                 */
-                var _createChunkGUI = function(chunk, index) {
-                    var div = $('<div><header>Chunk ' + index + ': ' + chunk.getName() + '</header>');
-
-                    var LENGTH_WIDTH = Math.ceil(Math.log(Math.pow(2, 32) - 1) / Math.log(10)); // Max length
-                    // Length
-                    var lengthHexInput = $('<input name="chunk-0-length-textarea" type="text" size="12" value="' + chunk.getLengthHex() + '"/>');
-                    lengthHexInput.on("change", function() {
-                        chunk.setLengthHex(this.value);
-                    });
-                    chunk.addListener(function() {
-                        lengthHexInput.val(chunk.getLengthHex());
-                    });
-                    console.log("Chunks length: " + chunk.getLengthDec());
-                    var lengthDecInput = $('<input name="chunk-0-length-ascii-textarea" type="text" size="' + LENGTH_WIDTH + '" value="' + chunk.getLengthDec() + '"/><sub>bytes</sub>');
-                    lengthDecInput.on("change", function() {
-                        chunk.setLengthDec(this.value);
-                    });
-                    chunk.addListener(function() {
-                        lengthDecInput.val(chunk.getLengthDec());
-                    });
-                    div.append($('<label>Length</label>'))
-                            .append(lengthHexInput)
-                            .append(lengthDecInput);
-
-                    // Type/Name
-                    div.append($('<label>Type/Name</label>'))
-                            .append($('<input name="chunk-0-type-textarea" type="text" size="12" value="' + chunk.getNameHex() + '"/>'))
-                            .append($('<input name="chunk-0-type-ascii-textarea" type="text" size="4" value="' + chunk.getName() + '"/><sub>ASCII</sub></label>'));
-
-                    // Data
-                    div.append($('<label>Data</label>'))
-                            .append($('<textarea name="chunk-0-data-textarea" rows="4" cols="50">' + chunk.getDataHex() + '</textarea>'));
-
-                    // CRC
-                    div.append($('<label>CRC</label>'))
-                            .append($('<input name="chunk-0-crc-textarea" type="text" size="12" value="' + chunk.getCrcHex() + '"/>'))
-                            .append($('<input name="chunk-0-crc-ascii-textarea" type="text" size="10"  value="' + chunk.getCrc() + '"/><sub>dec</sub>'));
-
-                    return div;
-                };
-
-                var _createChunksGUI = function() {
-                    var div = $('<div><div/>');
-                    var names = Object.keys(_pngImage.getChunks());
-                    console.log('chunks:' + names.length);
-                    for (var i = 0; i < names.length; ++i) {
-                        div.append(_createChunkGUI(_pngImage.getChunks()[names[i]], i));
-                    }
-                    return div;
-                };
-
                 var _redraw = function() {
                     _pngImage.renderInImg(_viewportJQuery[0]);
                 };
                 _pngImage.addListener(_redraw);
-                var _element = $('<div><div/>')
-                        .append(_createSignatureGUI())
-                        .append(_createChunksGUI());
 
                 return {
                     /**
@@ -264,7 +209,6 @@
                         return this;
                     },
                     refresh: function() {
-                        $(gUIDiv).empty().append(_element);
                     }
                 };
             }

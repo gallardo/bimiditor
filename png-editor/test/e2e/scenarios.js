@@ -12,7 +12,7 @@ angular.scenario.dsl('willBeTrue', function() {
     };
 });
 
-describe('binPNGEditorTest', function() {
+describe('binPNGEditorTest', function($log) {
     beforeEach(function() {
         browser().navigateTo('../../public_html/index.html');
     });
@@ -83,5 +83,18 @@ describe('binPNGEditorTest', function() {
     it('should render 5 chunks for the lenna example', function() {
       element('#get-example-file-icon').click();
       expect(element('div[id^=chunk-]').count()).toBe(5);
-    })
+    });
+
+    it('should create 5 links in the topbar upon loading of the lenna example', function() {
+      element('#get-example-file-icon').click();
+      expect(element('#top-nav a[href^=#chunk-]').count()).toBe(5);
+    });
+
+    // AG 2013-06-07 Cannot get this working: the navbar doesn't react always to the browser().navigateTo() (!)
+    // it('should update the topbar active element upon loading of the lenna example and scrolling down', function() {
+    //   element('#get-example-file-icon').click();
+    //   browser().navigateTo('#chunk-5');
+    //   var selectorChunk5Active = '#top-nav li:has(a[href=#chunk-5]).active';
+    //   expect(element(selectorChunk5Active).count()).toBe(1);
+    // });
 });

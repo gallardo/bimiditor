@@ -62,19 +62,9 @@
                         <li><a href="#EditedImageDiv">Edited</a></li>
                         <li><a href="#OriginalImageDiv">Original</a></li>
                         <li class="divider-vertical"></li>
-                        <li><a href="#chunk-1">@Chunk 1</a></li>
-                        <li><a href="#chunk-2">@Chunk 2</a></li>
-                        <li><a href="#chunk-3">@Chunk 3</a></li>
-                        <!-- XXX: This is now automatically done upon DOM modifications with the chunk-stalker-nav-bar directive-->
-                        <li><button onclick="refreshNavbar()"><i class="icon-refresh"></i></button></li>
-                        <script type="text/javascript">
-                        var refreshNavbar = function() {
-                            $('[data-spy="scroll"]').each(function() {
-                                var $spy = $(this).scrollspy('refresh');
-                                console.log('Refreshing scroll...');
-                            });
-                        };
-                        </script>
+                        <li ng-repeat="chunk in pngEditedImage.chunks">
+                            <a href="#chunk-{{$index+1}}"><small>Chunk {{$index + 1}}:</small> {{chunk.name}}</a>
+                        </li>
                     </ul>
                 </div>
             </div>

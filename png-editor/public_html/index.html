@@ -51,7 +51,34 @@
         <script src="lib/modernizr-2.0.6.min.js"></script>
     </head>
 
-    <body> 
+    <body data-spy="scroll" data-target="#top-nav" ng-controller="BinPngEditorCtrl" chunk-stalker-nav-bar="pngEditedImage.chunks">
+        <div id="top-nav" class="navbar navbar-fixed-top">
+            <div class="navbar-inner" style="min-height:0">
+                <div class="container">
+                    <a class="brand" href="#">PNG Editor</a>
+                    <ul class="nav">
+                        <li><a href="#FileInfoDiv">File info</a></li>
+                        <li class="divider-vertical"></li>
+                        <li><a href="#EditedImageDiv">Edited</a></li>
+                        <li><a href="#OriginalImageDiv">Original</a></li>
+                        <li class="divider-vertical"></li>
+                        <li><a href="#chunk-1">@Chunk 1</a></li>
+                        <li><a href="#chunk-2">@Chunk 2</a></li>
+                        <li><a href="#chunk-3">@Chunk 3</a></li>
+                        <!-- XXX: This is now automatically done upon DOM modifications with the chunk-stalker-nav-bar directive-->
+                        <li><button onclick="refreshNavbar()"><i class="icon-refresh"></i></button></li>
+                        <script type="text/javascript">
+                        var refreshNavbar = function() {
+                            $('[data-spy="scroll"]').each(function() {
+                                var $spy = $(this).scrollspy('refresh');
+                                console.log('Refreshing scroll...');
+                            });
+                        };
+                        </script>
+                    </ul>
+                </div>
+            </div>
+        </div>
         <div id="wrap">
             <header class="hero-unit">
                 <h1>binPNG Editor</h1>
@@ -69,7 +96,7 @@
                         </ul>
                     </nav>
 
-                    <div id="main" class="span10" role="main" ng-controller="BinPngEditorCtrl">
+                    <div id="main" class="span10" role="main">
                         <!-- File load status -->
                         <div class="row-fluid">
                             <div id="FileInfoDiv" class="span12"></div>
@@ -118,6 +145,7 @@
                             <div id="PNGEditorDiv" ng-switch on="pngFile.loaded">
                                 <!-- XXX: When https://github.com/angular/angular.js/issues/768 is implemented, it should be possible to write <input model="pngEditedImage.@signatureHex" /> -->
                                 <div ng-switch-when="true">
+                                    <i id="recalculate-size-icon" class="icon-refresh" data-toogle="tooltip" title="Auto-recalculate size on edits (not yet available)"></i>
                                     <header>File signature</header>
                                     <label>Signature</label>
                                     <input id="signature-textarea" name="signature-textarea" type="text" size="24" readonlyXXX="readonly" ng-model="pngEditedImage.signatureHex"/>
@@ -266,6 +294,7 @@
                 // Bootstrap tooltips
                 $('#image-file-icon').tooltip();
                 $('#save-file-icon').tooltip();
+                $('#recalculate-size-icon').tooltip();
             });
         </script>
         <!-- end scripts-->

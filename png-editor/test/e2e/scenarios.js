@@ -80,14 +80,14 @@ describe('binPNGEditorTest', function($log) {
       expect(element('#signature-textarea').val()).toBe(PNG.signature_hex);
     });
 
-    it('should render 5 chunks for the lenna example', function() {
+    it('should render 6 chunks for the lenna example', function() {
       element('#get-example-file-icon').click();
-      expect(element('div[id^=chunk-]').count()).toBe(5);
+      expect(element('div[id^=chunk-]').count()).toBe(6);
     });
 
-    it('should create 5 links in the topbar upon loading of the lenna example', function() {
+    it('should create 6 links in the topbar upon loading of the lenna example', function() {
       element('#get-example-file-icon').click();
-      expect(element('#top-nav a[href^=#chunk-]').count()).toBe(5);
+      expect(element('#top-nav a[href^=#chunk-]').count()).toBe(6);
     });
 
     // AG 2013-06-07 Cannot get this working: the navbar doesn't react always to the browser().navigateTo() (!)

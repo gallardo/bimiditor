@@ -280,7 +280,7 @@ function PngImage(buffer) {
         var c = Chunk(buffer, _ptr);
         c.addListener(_that.notifyListeners);
         console.log('Read chunk named "' + c.name + '" of length ' + c.chunksLength + ' bytes.');
-        _chunks[c.name] = c;
+        _chunks[_nChunks] = c;
         _ptr += c.chunksLength;
         ++_nChunks;
     }

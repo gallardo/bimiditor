@@ -69,7 +69,7 @@
                 </div>
             </div>
         </div>
-        <div id="wrap">
+        <div id="wrap" style="padding-bottom: 80px">
             <header class="hero-unit">
                 <h1>binPNG Editor</h1>
                 <p>A binary PNG editor to learn basic image-processing algorithms and technics</p>
@@ -131,28 +131,38 @@
                             </div>
                         </div><!-- /#ImagesDiv -->
 
+                        <div id="Options">
+                            <header><h3>Options</h3></header>
+                            <p><i id="recalculate-size-icon" class="icon-refresh" data-toogle="tooltip" title="Auto-recalculate size on edits (not yet available)"></i> File size synchronization: on / off</p>
+                        </div><!-- /#OptionsDiv -->
+
                         <div class="row-fluid">
                             <div id="PNGEditorDiv" ng-switch on="pngFile.loaded">
                                 <!-- XXX: When https://github.com/angular/angular.js/issues/768 is implemented, it should be possible to write <input model="pngEditedImage.@signatureHex" /> -->
                                 <div ng-switch-when="true">
-                                    <i id="recalculate-size-icon" class="icon-refresh" data-toogle="tooltip" title="Auto-recalculate size on edits (not yet available)"></i>
-                                    <header>File signature</header>
-                                    <label>Signature</label>
-                                    <input id="signature-textarea" name="signature-textarea" type="text" size="24" readonlyXXX="readonly" ng-model="pngEditedImage.signatureHex"/>
+                                    <div id="signature">
+                                        <header><h3><i data-toggle="collapse" data-target="#signature .collapse" class="icon-chevron-down"></i>File signature</h3></header>
+                                        <div class="collapse in">
+                                            <label>Signature</label>
+                                            <input id="signature-textarea" name="signature-textarea" type="text" size="24" readonlyXXX="readonly" ng-model="pngEditedImage.signatureHex"/>
+                                        </div>
+                                    </div>
 
                                     <div ng-repeat="chunk in pngEditedImage.chunks" id="chunk-{{$index + 1}}">
-                                        <header>Chunk {{$index + 1}}: {{chunk.name}}</header>
-                                        <label>Length</label>
-                                        <input name="chunk-{{$index + 1}}-length-textarea" type="text" size="12" ng-model="chunk.lengthHex"/>
-                                        <input name="chunk-{{$index + 1}}-length-ascii-textarea" type="text" size="{{WIDTH_32BIT_BASE10}}" ng-model="chunk.lengthDec"/><sub>bytes</sub>
-                                        <label>Type/Name</label>
-                                        <input name="chunk-{{$index + 1}}-type-textarea" type="text" size="12" value="{{chunk.nameHex}}"/>
-                                        <input name="chunk-{{$index + 1}}-type-ascii-textarea" type="text" size="4" value="{{chunk.name}}"/><sub>ASCII</sub>
-                                        <label>Data</label>
-                                        <textarea name="chunk-{{$index + 1}}-data-textarea" rows="4" cols="50">{{chunk.dataHex}}</textarea>
-                                        <label>CRC</label>
-                                        <input name="chunk-0-crc-textarea" type="text" size="12" value="{{chunk.crcHex}}"/>
-                                        <input name="chunk-0-crc-ascii-textarea" type="text" size="10"  value="{{chunk.crc}}"/><sub>dec</sub>
+                                        <header><h3><i data-toggle="collapse" data-target="#chunk-{{$index + 1}} .collapse" class="icon-chevron-down"></i> Chunk {{$index + 1}}: {{chunk.name}}</h3></header>
+                                        <div class="collapse in">
+                                            <label>Length</label>
+                                            <input name="chunk-{{$index + 1}}-length-textarea" type="text" size="12" ng-model="chunk.lengthHex"/>
+                                            <input name="chunk-{{$index + 1}}-length-ascii-textarea" type="text" size="{{WIDTH_32BIT_BASE10}}" ng-model="chunk.lengthDec"/><sub>bytes</sub>
+                                            <label>Type/Name</label>
+                                            <input name="chunk-{{$index + 1}}-type-textarea" type="text" size="12" value="{{chunk.nameHex}}"/>
+                                            <input name="chunk-{{$index + 1}}-type-ascii-textarea" type="text" size="4" value="{{chunk.name}}"/><sub>ASCII</sub>
+                                            <label>Data</label>
+                                            <textarea name="chunk-{{$index + 1}}-data-textarea" rows="4" cols="50">{{chunk.dataHex}}</textarea>
+                                            <label>CRC</label>
+                                            <input name="chunk-0-crc-textarea" type="text" size="12" value="{{chunk.crcHex}}"/>
+                                            <input name="chunk-0-crc-ascii-textarea" type="text" size="10"  value="{{chunk.crc}}"/><sub>dec</sub>
+                                        </div>
                                     </div>
                                 </div>
                                 <div ng-switch-default>

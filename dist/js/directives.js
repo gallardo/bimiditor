@@ -36,3 +36,21 @@ app.directive('chunkStalkerNavBar', ['$log', '$timeout', function($log, $timeout
         }
     }
 }]);
+
+/**
+ * Creates a bootstrap tooltip for the element where the directive is applied.
+ * @see https://groups.google.com/d/msg/angular/G2Sg39oiSXU/ExIJP1-82Z8J
+ */
+app.directive('tooltip', ['$log', function($log) {
+    return {
+        restrict: 'A',
+        link: function(scope, elm, attrs) {
+            var _tooltip = scope.$eval(attrs.tooltip);
+            if (_tooltip) {
+                $(elm)
+                    .attr('title', _tooltip)
+                    .tooltip({placement: "right"});
+            }
+        }
+    }
+}]);

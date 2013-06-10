@@ -39,6 +39,13 @@ app.directive('chunkStalkerNavBar', ['$log', '$timeout', function($log, $timeout
 
 /**
  * Creates a bootstrap tooltip for the element where the directive is applied.
+ * Its value will be rendered as tooltip text. Notice that it is not necessary to use the
+ * bootstrap <tt>data-toggle="tooltip"</tt>
+ *
+ * Example of use:
+ * <blockquote>
+ *    <i id="save-file-icon" class="icon-download" tooltip="'Save edited image (not yet available)'"></i>
+ * </blockquote>
  * @see https://groups.google.com/d/msg/angular/G2Sg39oiSXU/ExIJP1-82Z8J
  */
 app.directive('tooltip', ['$log', function($log) {

@@ -179,7 +179,33 @@ function Chunk(buffer, start) {
             return batos(_bytes.subarray(_chunkStartPtr + 4, _chunkStartPtr + 8));
         },
         get nameMeaning() {
-
+            var _meanings = {
+                // Critial chunks
+                IHDR: {tooltip:"Image Header", href:"http://www.w3.org/TR/PNG/#11IHDR"},
+                PLTE: {tooltip:"Palette", href:"http://www.w3.org/TR/PNG/#11PLTE"},
+                IDAT: {tooltip:"Image data", href:"http://www.w3.org/TR/PNG/#11IDAT"},
+                IEND: {tooltip:"Image trailer", href:"http://www.w3.org/TR/PNG/#11IEND"},
+                // Ancillary chunks
+                // Ancillary - Transparency
+                TRNS: {tooltip:"Transparency", href:"http://www.w3.org/TR/PNG/#11tRNS"},
+                // Ancillary - Colour space information
+                CHRM: {tooltip:"Colour space information", href:"http://www.w3.org/TR/PNG/#11cHRM"},
+                GAMA: {tooltip:"Image gamma", href:"http://www.w3.org/TR/PNG/#11gAMA"},
+                ICCP: {tooltip:"Embedded ICC profile", href:"http://www.w3.org/TR/PNG/#11iCCP"},
+                SBIT: {tooltip:"Significant bits", href:"http://www.w3.org/TR/PNG/#11sBIT"},
+                SRGB: {tooltip:"Standard RGB colour space", href:"http://www.w3.org/TR/PNG/#11sRGB"},
+                // Ancillary - Textual information
+                TEXT: {tooltip:"Textual data", href:"http://www.w3.org/TR/PNG/#11tEXt"},
+                ZTXT: {tooltip:"Compressed textual data", href:"http://www.w3.org/TR/PNG/#11zTXt"},
+                ITXT: {tooltip:"International textual data", href:"http://www.w3.org/TR/PNG/#11iTXt"},
+                // Ancillary - Miscellaneous information
+                BKGD: {tooltip:"Background colour", href:"http://www.w3.org/TR/PNG/#11bKGD"},
+                HIST: {tooltip:"Image histogram", href:"http://www.w3.org/TR/PNG/#11hIST"},
+                PHYS: {tooltip:"Physical pixel dimensions", href:"http://www.w3.org/TR/PNG/#11pHYs"},
+                SPLT: {tooltip:"Suggested palette", href:"http://www.w3.org/TR/PNG/#11sPLT"},
+                TIME: {tooltip:"Image last-modification time", href:"http://www.w3.org/TR/PNG/#11tIME"},
+            };
+            return _meanings[this.name.toUpperCase()];
         },
         /**
          * @returns {String}
@@ -263,7 +289,10 @@ function PngImage(buffer) {
         get chunks() {
             return _chunks;
         },
+        // TODO: AngularJS calls this getter very often. It must be optimized such that
+        // it returns a cached image if image has not been changed
         get imgSrc() {
+            console.log('Encoding image...')
             var encodedBytes = batobase64(_bytes);
             // return 'data:application/octet-stream;base64,' + 'SG9sYSwgbXVuZG8hCg==';
             return 'data:image/png;base64,' + encodedBytes;

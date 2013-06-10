@@ -149,7 +149,7 @@
                                     </div>
 
                                     <div ng-repeat="chunk in pngEditedImage.chunks" id="chunk-{{$index + 1}}">
-                                        <header><h3><i data-toggle="collapse" data-target="#chunk-{{$index + 1}} .collapse" class="icon-chevron-down"></i> Chunk {{$index + 1}}: {{chunk.name}}</h3></header>
+                                        <header><h3><i data-toggle="collapse" data-target="#chunk-{{$index + 1}} .collapse" class="icon-chevron-down"></i> Chunk {{$index + 1}}: <a rel="tooltip" tooltip="chunk.nameMeaning.tooltip" ng-href="{{chunk.nameMeaning.href}}">{{chunk.name}}</a></h3></header>
                                         <div class="collapse in">
                                             <label>Length</label>
                                             <input name="chunk-{{$index + 1}}-length-textarea" type="text" size="12" ng-model="chunk.lengthHex"/>

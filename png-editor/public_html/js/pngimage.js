@@ -118,7 +118,7 @@ function Chunk(buffer, start) {
          * Overwrites the corresponding bytes of the original image.
          * @param {String} hex string containing number in
          *       hexadecimal notation
-         * @returns {Chunk} this for method chaining
+         * @returns {Chunk} 'this' for method chaining
          */
         set lengthHex(hex) {
             var hexBytes = hexstoba(hex);
@@ -137,7 +137,7 @@ function Chunk(buffer, start) {
         /**
          * Overwrites the corresponding bytes of the original image.
          * @param {Number} length length of the chunk in bytes
-         * @returns {Chunk} this for method chaining
+         * @returns {Chunk} 'this' for method chaining
          */
         set lengthDec(length) {
             _dataView.setUint32(_chunkStartPtr, length);
@@ -156,10 +156,37 @@ function Chunk(buffer, start) {
             return batohexs(_bytes.subarray(_chunkStartPtr + 4, _chunkStartPtr + 8));
         },
         /**
+         * Overwrites the corresponding bytes of the original image.
+         * @param {String} hex string containing name in
+         *       hexadecimal notation
+         * @returns {Chunk} 'this' for method chaining
+         */
+        set nameHex(hex) {
+            var hexBytes = hexstoba(hex);
+            var _ptr = _chunkStartPtr + 4;
+            for (var i = 0; i < hexBytes.length; i++, ++_ptr) {
+                _bytes[_ptr] = hexBytes[i];
+            }
+            return this;
+        },
+        /**
          * @returns {String}
          */
         get name() {
             return batos(_bytes.subarray(_chunkStartPtr + 4, _chunkStartPtr + 8));
+        },
+        /**
+         * Overwrites the corresponding bytes of the original image.
+         * @param {String} name name of the chunk
+         * @returns {Chunk} 'this' for method chaining
+         */
+        set name(newName) {
+            var _ptr = _chunkStartPtr + 4;
+            for (var i = 0; i < newName.length; i++, ++_ptr) {
+                console.debug("setting char " + i + " with charCodeAt: " + newName.charCodeAt(i) + " (" + (newName.charCodeAt(i) & 0x7f) + ")");
+                _bytes[_ptr] = (newName.charCodeAt(i) & 0x7f);
+            }
+            return this;
         },
         get nameMeaning() {
             var _meanings = {

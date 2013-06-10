@@ -156,8 +156,8 @@
                                             <input name="chunk-{{$index + 1}}-length-textarea" type="text" size="12" ng-model="chunk.lengthHex"/>
                                             <input name="chunk-{{$index + 1}}-length-ascii-textarea" type="text" size="{{WIDTH_32BIT_BASE10}}" ng-model="chunk.lengthDec"/><sub>bytes</sub>
                                             <label>Type/Name</label>
-                                            <input name="chunk-{{$index + 1}}-type-textarea" type="text" size="12" value="{{chunk.nameHex}}"/>
-                                            <input name="chunk-{{$index + 1}}-type-ascii-textarea" type="text" size="4" value="{{chunk.name}}"/><sub>ASCII</sub>
+                                            <input name="chunk-{{$index + 1}}-type-textarea" type="text" size="12" ng-model="chunk.nameHex"/>
+                                            <input name="chunk-{{$index + 1}}-type-ascii-textarea" type="text" size="4" ng-model="chunk.name"/><sub>ASCII</sub>
                                             <label>Data</label>
                                             <textarea name="chunk-{{$index + 1}}-data-textarea" rows="4" cols="50">{{chunk.dataHex}}</textarea>
                                             <label>CRC</label>

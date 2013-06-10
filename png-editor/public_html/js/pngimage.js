@@ -178,6 +178,9 @@ function Chunk(buffer, start) {
         get name() {
             return batos(_bytes.subarray(_chunkStartPtr + 4, _chunkStartPtr + 8));
         },
+        get nameMeaning() {
+
+        },
         /**
          * @returns {String}
          */
@@ -237,15 +240,6 @@ function PngImage(buffer) {
             return this;
         },
         /**
-         * @param {Element} tag where to render the image
-         */
-        renderInImg: function(tag) {
-            var encodedBytes = batobase64(_bytes);
-            tag.setAttribute('src', 'data:image/png;base64,' + encodedBytes);
-            tag.setAttribute('width', '' + this.width);
-            tag.setAttribute('height', '' + this.height);
-        },
-        /**
          * @returns {String}
          */
         get signatureHex() {
@@ -269,9 +263,10 @@ function PngImage(buffer) {
         get chunks() {
             return _chunks;
         },
-        // TODO:
-        get downloadUrl() {
-            return 'data:application/octet-stream;base64,' + 'SG9sYSwgbXVuZG8hCg==';
+        get imgSrc() {
+            var encodedBytes = batobase64(_bytes);
+            // return 'data:application/octet-stream;base64,' + 'SG9sYSwgbXVuZG8hCg==';
+            return 'data:image/png;base64,' + encodedBytes;
         }
     };
     // read chunks

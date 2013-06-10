@@ -13,7 +13,7 @@ angular.module('binPngEditorApp.controllers', [])
             size: '--',
             lastModifiedDate: '--'
         };
-        $scope.pngOriginalImage = {};
+        $scope.pngSourceImage = {};
         $scope.pngEditedImage = {};
 
         // See http://stackoverflow.com/questions/16791295/how-to-read-binary-data-in-angularjs-in-an-arraybuffer
@@ -28,7 +28,7 @@ angular.module('binPngEditorApp.controllers', [])
                 $log.log("Read '" + LENNA_PATH + "': " + data.byteLength + " bytes.");
                 var pngImage = PngImage(data);
 
-                $scope.pngOriginalImage = pngImage;
+                $scope.pngSourceImage = pngImage;
                 $scope.pngEditedImage = pngImage; // TODO: This should be a copy
                 $scope.pngFile = {
                     name: "Lenna_64.png",
@@ -52,7 +52,7 @@ angular.module('binPngEditorApp.controllers', [])
             if (file.type === "image/png") {
                 readImage(file, function(pngImage) {
                     $scope.$apply(function() {
-                        $scope.pngOriginalImage = pngImage;
+                        $scope.pngSourceImage = pngImage;
                         $scope.pngEditedImage = pngImage; // TODO: This should be a copy
                         $scope.pngFile = file;
                         $scope.pngFile.loaded = true;
@@ -66,16 +66,6 @@ angular.module('binPngEditorApp.controllers', [])
             }
         };
 
-        $scope.$watch('pngOriginalImage', function() {
-            if ($scope.pngOriginalImage.renderInImg) {
-                $scope.pngOriginalImage.renderInImg($('#original-image-img')[0]);
-            }
-        });
-        $scope.$watch('pngEditedImage', function() {
-            if ($scope.pngEditedImage.renderInImg) {
-                $scope.pngEditedImage.renderInImg($('#edited-image-img')[0]);
-            }
-        });
         $scope.$watch('pngEditedImage.signatureHex', function(newVal, oldVal) {
             // XXX: for debugging
             $log.log('pngEditedImage.signatureHex modified from ' + oldVal + ' to ' + newVal);

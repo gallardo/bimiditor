@@ -60,7 +60,7 @@
                         <li><a href="#FileInfoDiv">File info</a></li>
                         <li class="divider-vertical"></li>
                         <li><a href="#EditedImageDiv">Edited</a></li>
-                        <li><a href="#OriginalImageDiv">Original</a></li>
+                        <li><a href="#SourceImageDiv">Source</a></li>
                         <li class="divider-vertical"></li>
                         <li ng-repeat="chunk in pngEditedImage.chunks">
                             <a href="#chunk-{{$index+1}}"><small>Chunk {{$index + 1}}:</small> {{chunk.name}}</a>
@@ -81,13 +81,12 @@
                             <li class="nav-header">Jump to</li>
                             <li><a href="#FileInfoDiv">File info</a></li>
                             <li><a href="#EditedImageDiv">Edited png</a></li>
-                            <li><a href="#OriginalImageDiv">Original png</a></li>
+                            <li><a href="#SourceImageDiv">Source png</a></li>
                             <li><a href="#PNGEditorDiv">PNG editor</a></li>
                         </ul>
                     </nav>
 
                     <div id="main" class="span10" role="main">
-                        <!-- File load status -->
                         <div class="row-fluid">
                             <div id="FileInfoDiv" class="span12"></div>
                             <div>
@@ -110,11 +109,11 @@
                                         </fieldset>
                                     </form>
                                 </div>
-                                <img id="edited-image-img" alt="Edited Image" width="100" height="100" src="" class="img-polaroid" />
+                                <img id="edited-image-img" alt="Edited Image" width="{{pngEditedImage.width}}" height="{{pngEditedImage.height}}" ng-src="{{pngEditedImage.imgSrc}}" class="img-polaroid" />
                             </div>
 
-                            <div id="OriginalImageDiv" class="span6">
-                                <h2>Original image</h2>
+                            <div id="SourceImageDiv" class="span6">
+                                <h2>Source image</h2>
                                 <div id="LoadFileDiv">
                                     <form name="file-form">
                                         <fieldset>
@@ -126,7 +125,7 @@
                                     </form>
                                 </div>
                                 <div id="file-drag">
-                                    <img id="original-image-img" alt="Original Image" width="100" height="100" src="" class="img-polaroid" />
+                                    <img id="source-image-img" alt="Source Image" width="{{pngSourceImage.width}}" height="{{pngSourceImage.height}}" ng-src="{{pngSourceImage.imgSrc}}" class="img-polaroid" />
                                 </div>
                             </div>
                         </div><!-- /#ImagesDiv -->
@@ -134,6 +133,7 @@
                         <div id="Options">
                             <header><h3>Options</h3></header>
                             <p><i id="recalculate-size-icon" class="icon-refresh" data-toogle="tooltip" title="Auto-recalculate size on edits (not yet available)"></i> File size synchronization: on / off</p>
+                            <p><i id="recalculate-crc-icon" class="icon-refresh" data-toogle="tooltip" title="Auto-recalculate CRC on edits (not yet available)"></i> CRC synchronization: on / off</p>
                         </div><!-- /#OptionsDiv -->
 
                         <div class="row-fluid">

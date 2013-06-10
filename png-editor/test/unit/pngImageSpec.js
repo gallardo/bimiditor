@@ -16,6 +16,8 @@ describe("PngImage suite", function() {
         expect(pngImage.height).toBe(LENNA.height);
         expect(Object.keys(pngImage.chunks).length)
                 .toBe(LENNA.chunksLength);
+        expect(pngImage.chunks.length)
+                .toBe(LENNA.chunksLength);
         expect(pngImage.signatureHex).toBe(PNG_SIGNATURE_HEX);
     });
 });

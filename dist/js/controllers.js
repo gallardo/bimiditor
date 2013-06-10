@@ -34,35 +34,35 @@ angular.module('binPngEditorApp.controllers', [])
                     name: "Lenna_64.png",
                     type: "image/png",
                     size: data.byteLength,
-                    lastModifiedDate: new Date()
+                    lastModifiedDate: new Date(),
+                    status: "Download successful",
+                    statusClass: "text-success"
                 };
                 $scope.pngFile.loaded = true;
-
-                // TODO: Angularize
-                //PngGUI($('#PNGEditorDiv')[0], pngImage)
-                //  .setImageViewport($('#edited-image-img')[0])
-                //.refresh();
-
             }).error(function() {
                 $log.error('Could not get ' + LENNA_PATH);
             });
         };
 
         $scope.setFile = function(file) {
+            $scope.$apply(function() {
+                $scope.pngFile = file;
+            });
             if (file.type === "image/png") {
                 readImage(file, function(pngImage) {
                     $scope.$apply(function() {
                         $scope.pngSourceImage = pngImage;
                         $scope.pngEditedImage = pngImage; // TODO: This should be a copy
-                        $scope.pngFile = file;
                         $scope.pngFile.loaded = true;
+                        $scope.pngFile.status = "Upload successful";
+                        $scope.pngFile.statusClass = "text-success";
                     });
                 });
             } else {
-                $("#FileInfoDiv").append($(
-                        "<p>File format <strong>" + file.type +
-                        "</strong> not supported.</p>"
-                        ));
+                $scope.$apply(function() {
+                    $scope.pngFile.status = "File not supported";
+                    $scope.pngFile.statusClass = "text-error";
+                });
             }
         };
 

@@ -101,12 +101,6 @@ function Chunk(buffer, start) {
     var _chunkStartPtr = start; // Points to the start of the chunk
     var _bytes = new Uint8Array(buffer);
     var _dataView = new DataView(buffer);
-    var _listeners = [];
-    var _notifyListeners = function() {
-        for (var i = 0; i < _listeners.length; i++) {
-            _listeners[i]();
-        }
-    };
     /**
      * @returns {Number} length of data block
      */
@@ -115,13 +109,6 @@ function Chunk(buffer, start) {
     };
     return {
         /**
-         * @param {function} l listener that will be notified on
-         *       changes
-         */
-        addListener: function(l) {
-            _listeners.push(l);
-        },
-        /**
          * @returns {String}
          */
         get lengthHex() {
@@ -129,7 +116,6 @@ function Chunk(buffer, start) {
         },
         /**
          * Overwrites the corresponding bytes of the original image.
-         * Changing the bytes notifies all listeners
          * @param {String} hex string containing number in
          *       hexadecimal notation
          * @returns {Chunk} this for method chaining
@@ -140,7 +126,6 @@ function Chunk(buffer, start) {
             for (var i = 0; i < hexBytes.length; ++i, ++_ptr) {
                 _bytes[_ptr] = hexBytes[i];
             }
-            _notifyListeners();
             return this;
         },
         /**
@@ -151,13 +136,11 @@ function Chunk(buffer, start) {
         },
         /**
          * Overwrites the corresponding bytes of the original image.
-         * Changing the bytes notifies all listeners
          * @param {Number} length length of the chunk in bytes
          * @returns {Chunk} this for method chaining
          */
         set lengthDec(length) {
             _dataView.setUint32(_chunkStartPtr, length);
-            _notifyListeners();
             return this;
         },
         /**
@@ -241,32 +224,12 @@ function PngImage(buffer) {
     var _width = _dataView.getUint32(WIDTH_PTR);
     var _height = _dataView.getUint32(HEIGHT_PTR);
     var _chunks = [];
-    var _listeners = [];
     // pointer to the index in the byte array of the next chunk to read
     var _ptr = 8;
     var _nChunks = 0;
     // caches the base64 encoded image
     var _encodedBytes = {};
     var _that = {
-        /**
-         * 
-         * @param {function} l will be called on image changes
-         * @returns {PngImage} this for method chaining
-         */
-        addListener: function(l) {
-            _listeners.push(l);
-            return this;
-        },
-        /**
-         * 
-         * @returns {PngImage} this for method chaining
-         */
-        notifyListeners: function() {
-            for (var i = 0; i < _listeners.length; ++i) {
-                _listeners[i]();
-            }
-            return this;
-        },
         /**
          * @returns {String}
          */
@@ -314,7 +277,6 @@ function PngImage(buffer) {
     console.log('Reading chunks...');
     while (_ptr < _bytes.length) {
         var c = Chunk(buffer, _ptr);
-        c.addListener(_that.notifyListeners);
         console.log('Read chunk ' + _nChunks + ' named "' + c.name + '": ' + c.chunksLength + ' bytes.');
         _chunks[_nChunks] = c;
         _ptr += c.chunksLength;
@@ -346,12 +308,6 @@ function readImage(file, setPngImage) {
 
         var pngImage = PngImage(evt.target.result);
         _setPngImage(pngImage);
-
-//        // Re-create GUI editor and refresh image
-        // TODO: angularize
-        // PngGUI($('#PNGEditorDiv')[0], pngImage)
-        //         .setImageViewport($('#edited-image-img')[0])
-        //         .refresh();
     };
 
     _reader.readAsArrayBuffer(file);

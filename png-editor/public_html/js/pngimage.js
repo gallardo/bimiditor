@@ -240,11 +240,13 @@ function PngImage(buffer) {
     var _signature = _bytes.subarray(0, 8);
     var _width = _dataView.getUint32(WIDTH_PTR);
     var _height = _dataView.getUint32(HEIGHT_PTR);
-    var _chunks = {};
+    var _chunks = [];
     var _listeners = [];
     // pointer to the index in the byte array of the next chunk to read
     var _ptr = 8;
     var _nChunks = 0;
+    // caches the base64 encoded image
+    var _encodedBytes = {};
     var _that = {
         /**
          * 
@@ -289,13 +291,23 @@ function PngImage(buffer) {
         get chunks() {
             return _chunks;
         },
-        // TODO: AngularJS calls this getter very often. It must be optimized such that
-        // it returns a cached image if image has not been changed
+        /**
+         * To quick detect changes in the data
+         * @return {Number}
+         */
+        get hash() {
+            var _hash = 0;
+            for (var i = 0; i < _chunks.length; ++i) {
+                _hash += _chunks[i].crc;
+            }
+            return _hash;
+        },
         get imgSrc() {
-            console.log('Encoding image...')
-            var encodedBytes = batobase64(_bytes);
+            if (!_encodedBytes.hash || _encodedBytes.hash != this.hash) {
+                _encodedBytes = { bytes: batobase64(_bytes), hash: this.hash};
+            }
             // return 'data:application/octet-stream;base64,' + 'SG9sYSwgbXVuZG8hCg==';
-            return 'data:image/png;base64,' + encodedBytes;
+            return 'data:image/png;base64,' + _encodedBytes.bytes;
         }
     };
     // read chunks
@@ -303,7 +315,7 @@ function PngImage(buffer) {
     while (_ptr < _bytes.length) {
         var c = Chunk(buffer, _ptr);
         c.addListener(_that.notifyListeners);
-        console.log('Read chunk named "' + c.name + '" of length ' + c.chunksLength + ' bytes.');
+        console.log('Read chunk ' + _nChunks + ' named "' + c.name + '": ' + c.chunksLength + ' bytes.');
         _chunks[_nChunks] = c;
         _ptr += c.chunksLength;
         ++_nChunks;

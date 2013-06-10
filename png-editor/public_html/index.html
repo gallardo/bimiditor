@@ -95,6 +95,7 @@
                                 <p>Type: <strong id="pngFileTypeValue">{{pngFile.type}}</strong></p>
                                 <p>Size: <strong id="pngFileSizeValue">{{pngFile.size}}</strong> bytes</p>
                                 <p>Last modified: <strong id="pngFileLastModifiedDateValue">{{pngFile.lastModifiedDate}}</strong></p>
+                                <p>Status: <strong class="{{pngFile.statusClass}}">{{pngFile.status}}</strong></p>
                             </div>
                         </div>
 
@@ -211,36 +212,6 @@
             ;
         </script>
         <script>
-            /**
-             * @class Provides the API to create the PNG GUI
-             * @param {Element} gUIDiv where to append the html
-             * @param {PngImage} pngImage
-             * @returns {PngEditor} this for method chaining
-             */
-            function PngGUI(gUIDiv, pngImage) {
-                var _pngImage = pngImage;
-                var _viewportJQuery;
-
-                var _redraw = function() {
-                    _pngImage.renderInImg(_viewportJQuery[0]);
-                };
-                _pngImage.addListener(_redraw);
-
-                return {
-                    /**
-                     * @param {Element} viewportTag
-                     * @return {PngEditor} this for method chaining
-                     */
-                    setImageViewport: function(viewportTag) {
-                        _viewportJQuery = $(viewportTag);
-                        _redraw();
-                        return this;
-                    },
-                    refresh: function() {
-                    }
-                };
-            }
-
             function initFileSelector() {
                 var fileselect = $("#image-file")[0];
                 // file select
@@ -295,6 +266,7 @@
                 $('#image-file-icon').tooltip();
                 $('#save-file-icon').tooltip();
                 $('#recalculate-size-icon').tooltip();
+                $('#recalculate-crc-icon').tooltip();
             });
         </script>
         <!-- end scripts-->

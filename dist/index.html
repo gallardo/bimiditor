@@ -40,8 +40,12 @@
         <link href="css/main.css" media="screen">
 
         <!-- Bootstrap -->
+        <!-- <link rel="stylesheet" href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css"> -->
         <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
         <link href="bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
+
+        <!-- Bootstrap-switch -->
+        <link rel="stylesheet" href="bootstrap-switch/static/stylesheets/bootstrapSwitch.css">
 
         <!-- Main Stylesheet -->
         <link rel="stylesheet" href="css/style.css">
@@ -131,10 +135,18 @@
                             </div>
                         </div><!-- /#ImagesDiv -->
 
-                        <div id="Options">
+                        <div id="Options" class="row-fluid">
                             <header><h3>Options</h3></header>
-                            <p><i id="recalculate-size-icon" class="icon-refresh" tooltip="'Auto-recalculate size on edits (not yet available)'"></i> File size synchronization: on / off</p>
-                            <p><i id="recalculate-crc-icon" class="icon-refresh" tooltip="'Auto-recalculate CRC on edits (not yet available)'"></i> CRC synchronization: <strong>on</strong> / off</p>
+                            <div class="span12">
+                                <div class="row">
+                                    <label class="span2"><i id="recalculate-size-icon" class="icon-refresh" tooltip="'Auto-recalculate size on edits (not yet available)'"></i> File size synchronization: </label>
+                                    <div class="switch switch-mini"><input type="checkbox" disabled /></div>
+                                </div>
+                                <div class="row">
+                                    <label class="span2"><i id="recalculate-crc-icon" class="icon-refresh" tooltip="'Auto-recalculate CRC on edits (not yet available)'"></i> CRC synchronization: </label>
+                                    <div class="switch switch-mini "><input type="checkbox" disabled /></div>
+                                </div>
+                            </div>
                         </div><!-- /#OptionsDiv -->
 
                         <div class="row-fluid">
@@ -188,8 +200,9 @@
 
         <!-- JavaScript at the bottom for fast page loading -->
         <!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if necessary -->
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-        <script>window.jQuery || document.write('<script src="js/libs/jquery-1.7.1.min.js"><\/script>');</script>
+        <!-- AG 2013-06-12: bootstrap-switch requires jquery >= 1.9.0 -->
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="js/libs/jquery-1.9.0.min.js"><\/script>');</script>
 
         <!-- Grab Google CDN's AngularJs, with a protocol relative URL; fall back to local if necessary -->
         <!-- Angular 1.0.* doesn't support $http...responseType. See https://github.com/angular/angular.js/issues/1013 -->
@@ -197,7 +210,12 @@
         <script>window.angular || document.write('<script src="js/libs/angularjs-1.1.5/angular.min.js"><\/script>');</script>
 
         <!-- Bootstrap -->
+        <!--<script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>-->
         <script src="bootstrap/js/bootstrap.min.js"></script>
+
+        <!-- Bootstrap-switch -->
+        <script src="bootstrap-switch/static/js/bootstrapSwitch.js"></script>
+        <!-- <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/1.3/bootstrapSwitch.min.js"></script>  // from cdnjs.com -->
 
         <!-- scripts concatenated and minified via ant build script-->
         <script src="js/helper.js"></script>

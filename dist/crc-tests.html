@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>AngularJS tests</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="stylesheet" href="bootstrap/css/bootstrap.css">
+        <link rel="stylesheet" href="css/main.css">
+        <style>
+            input[type="text"].ng-invalid {
+                border-color: red;
+            }
+            input[type="text"].ng-valid {
+                border-color: green;
+            }
+            input[type="text"].ng-dirty {
+                border-style: solid;
+                border-width: 2px;
+            }
+            input {
+                font-family: monospace;
+                letter-spacing: 2px;
+                width: 400px; // 32*(8+2) + 8*(8+2)
+            }
+        </style>
+    </head>
+    <body>
+        <div ng-app="myApp">
+            <h1>Converter</h1>
+            <div ng-controller="Ctrl">
+                <input type="text" ng-model="data.bin" ng-pattern="/^[01]*$/" style="text-align:right"><sub>bin</sub>
+                    <input type="text" disabled value="{{data.bin.length}}"/><sub>length</sub><br/>
+                <input type="text" ng-model="data.hex" ng-pattern="/^[0-9a-fA-F]*$/" style="text-align:right"><sub>hex</sub>
+                    <input type="text" disabled value="{{data.hex.length}}"/><sub>length</sub><br/>
+                <input type="text" ng-model="data.dec" ng-pattern="/^[0-9]*$/" style="text-align:right"><sub>dec</sub>
+                    <input type="text" disabled value="{{data.dec.length}}"/><sub>length</sub><br/>
+                <input type="text" ng-model="data.binRev" ng-pattern="/^[01]*$/"><sub>bin rev</sub>
+                    <input type="text" disabled value="{{data.binRev.length}}"/><sub>length</sub><br/>
+                <input type="text" ng-model="data.hexRev" ng-pattern="/^[0-9a-fA-F]*$/"><sub>hex rev</sub>
+                    <input type="text" disabled value="{{data.hexRev.length}}"/><sub>length</sub><br/>
+                <input type="text" ng-model="data.decRev" ng-pattern="/^[0-9]*$/"><sub>dec rev</sub>
+                    <input type="text" disabled value="{{data.decRev.length}}"/><sub>length</sub><br/>
+                <button class="btn" type="button" ng-click="shiftLeft()">&lt;&lt;</button><button class="btn" type="button" ng-click="shiftRight()">&gt;&gt;</button>
+            </div>
+        </div>
+        <script type="text/javascript" src="lib/angular/angular.js"></script>
+        <script>
+            var myApp = angular.module('myApp', []);
+            myApp.filter('reverse', function() {
+                return function(text) {
+                    return text.split("").reverse().join("");
+                };
+            });
+            function Ctrl($scope) {
+                $scope.data = {
+                    num: 0,
+                    bin: "0",
+                    hex: "0",
+                    dec: "0",
+                    binRev: "0",
+                    hexRev: "0",
+                    decRev: "0",
+                };
+                var _reverse = function(text) {
+                    return text?text.split("").reverse().join(""):"";
+                };
+                var _updateData = function() {
+                    var newVal = $scope.data.num;
+                    if (newVal) {
+                        console.debug("Setting newVal: " + newVal);
+                        $scope.data.bin = newVal.toString(2);
+                        $scope.data.dec = newVal.toString(10);
+                        $scope.data.hex = newVal.toString(16);
+                        $scope.data.binRev = _reverse(newVal.toString(2));
+                        $scope.data.decRev = _reverse(newVal.toString(10));
+                        $scope.data.hexRev = _reverse(newVal.toString(16));
+                    } else {
+                        console.debug("No newVal. Setting _ZERO");
+                        $scope.data.num = 0;
+                        $scope.data.bin = "0";
+                        $scope.data.dec = "0";
+                        $scope.data.hex = "0";
+                        $scope.data.binRev = "0";
+                        $scope.data.decRev = "0";
+                        $scope.data.hexRev = "0";
+                    }
+                };
+                $scope.shiftLeft = function() {
+                    $scope.data.num = $scope.data.num << 1;
+                    _updateData();
+                };
+                $scope.shiftRight = function() {
+                    $scope.data.num = $scope.data.num >> 1;
+                    _updateData();
+                };
+
+                $scope.$watch('data.bin', function(newVal, oldVal) {
+                    $scope.data.num = parseInt(newVal, 2);
+                    console.log('data.bin sees  ' + newVal + ' (setting ' + $scope.data.num + ')');
+                    _updateData();
+                });
+                $scope.$watch('data.dec', function(newVal, oldVal) {
+                    $scope.data.num = parseInt(newVal, 10);
+                    console.log('data.dec sees ' + newVal + ' (setting ' + $scope.data.num + ')');
+                    _updateData();
+                });
+                $scope.$watch('data.hex', function(newVal, oldVal) {
+                    $scope.data.num = parseInt(newVal, 16);
+                    console.log('data.hex sees ' + newVal + ' (setting ' + $scope.data.num + ')');
+                    _updateData();
+                });
+                $scope.$watch('data.binRev', function(newVal, oldVal) {
+                    $scope.data.num = parseInt(_reverse(newVal), 2);
+                    console.log('data.binRev sees ' + newVal + ' (setting ' + $scope.data.num + ')');
+                    _updateData();
+                });
+                $scope.$watch('data.decRev', function(newVal, oldVal) {
+                    $scope.data.num = parseInt(_reverse(newVal), 10);
+                    console.log('data.decRev sees ' + newVal + ' (setting ' + $scope.data.num + ')');
+                    _updateData();
+                });
+                $scope.$watch('data.hexRev', function(newVal, oldVal) {
+                    $scope.data.num = parseInt(_reverse(newVal), 16);
+                    console.log('data.hexRev sees ' + newVal + ' (setting ' + $scope.data.num + ')');
+                    _updateData();
+                });
+            }
+        </script>
+    </body>
+</html>

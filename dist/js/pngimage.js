@@ -101,11 +101,34 @@ function Chunk(buffer, start) {
     var _chunkStartPtr = start; // Points to the start of the chunk
     var _bytes = new Uint8Array(buffer);
     var _dataView = new DataView(buffer);
+    var _currentCRC = []; // Current calculated CRC
     /**
+     * Number of bytes in the chunk's data field. The length counts
+     * <b>only</b> the data field, <b>not</b> itself, the chunk type,
+     * or the CRC. Zero is a valid length. Although encoders and
+     * decoders should treat the length as unsigned, its value shall
+     * not exceed 231-1 bytes
+     *
      * @returns {Number} length of data block
      */
     var _getDataLength = function() {
         return _dataView.getUint32(_chunkStartPtr);
+    };
+    var _getChunksLength = function() {
+        return _getDataLength() + 4 + 4 + 4; // + length + name + crc
+    };
+    /**
+     * Calculated on the preceding bytes in the chunk, including the
+     * chunk type field and chunk data fields, but <b>not</b> including
+     * the length field.
+     */
+    var _updateCRC = function() {
+        var start = _chunkStartPtr + 4; // length not included
+        var len = _getDataLength() + 4; // + type
+        _currentCRC = Crc().calculate(buffer, start, len);
+        console.log('calculated crc for buffer['
+            + start + ',' + len + '] ='+ (_currentCRC>>>0).toString(16));
+        console.log('from byte ' + _bytes[start].toString(16) + " until " + _bytes[start+len].toString(16));
     };
     return {
         /**
@@ -126,6 +149,7 @@ function Chunk(buffer, start) {
             for (var i = 0; i < hexBytes.length; ++i, ++_ptr) {
                 _bytes[_ptr] = hexBytes[i];
             }
+            _updateCRC();
             return this;
         },
         /**
@@ -141,13 +165,14 @@ function Chunk(buffer, start) {
          */
         set lengthDec(length) {
             _dataView.setUint32(_chunkStartPtr, length);
+            _updateCRC();
             return this;
         },
         /**
          * @returns {Number} chunk's length in bytes
          */
         get chunksLength() {
-            return _getDataLength() + 4 + 4 + 4; // length + name + crc
+            return _getChunksLength();
         },
         /**
          * @returns {String}
@@ -167,6 +192,7 @@ function Chunk(buffer, start) {
             for (var i = 0; i < hexBytes.length; i++, ++_ptr) {
                 _bytes[_ptr] = hexBytes[i];
             }
+            _updateCRC();
             return this;
         },
         /**
@@ -183,9 +209,9 @@ function Chunk(buffer, start) {
         set name(newName) {
             var _ptr = _chunkStartPtr + 4;
             for (var i = 0; i < newName.length; i++, ++_ptr) {
-                console.debug("setting char " + i + " with charCodeAt: " + newName.charCodeAt(i) + " (" + (newName.charCodeAt(i) & 0x7f) + ")");
                 _bytes[_ptr] = (newName.charCodeAt(i) & 0x7f);
             }
+            _updateCRC();
             return this;
         },
         get nameMeaning() {
@@ -224,17 +250,28 @@ function Chunk(buffer, start) {
             return batohexs(_bytes.subarray(_chunkStartPtr + 8, _chunkStartPtr + 8 + _getDataLength()));
         },
         /**
+         * Saved CRC (from data stream)
          * @returns {String}
          */
         get crcHex() {
             return batohexs(_bytes.subarray(_chunkStartPtr + 8 + _getDataLength(), _chunkStartPtr + 8 + _getDataLength() + 4));
         },
         /**
+         * Saved CRC (from data stream)
          * @returns {Number}
          */
         get crc() {
             return _dataView.getInt32(_chunkStartPtr + 8 + _getDataLength());
-        }
+        },
+        get currentCRC() {
+            _updateCRC();
+            return "" + _currentCRC;
+        },
+        get currentCrcHex() {
+            _updateCRC();
+            console.debug("Getting current Crc Hex");
+            return _currentCRC.toString(16);
+        },
     };
 }
 

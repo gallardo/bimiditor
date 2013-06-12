@@ -160,9 +160,12 @@
                                             <input name="chunk-{{$index + 1}}-type-ascii-textarea" type="text" size="4" ng-model="chunk.name"/><sub>ASCII</sub>
                                             <label>Data</label>
                                             <textarea name="chunk-{{$index + 1}}-data-textarea" rows="4" cols="50">{{chunk.dataHex}}</textarea>
-                                            <label><a tooltip="A four-byte CRC (Cyclic Redundancy Code) calculated on the preceding bytes in the chunk, including the chunk type field and chunk data fields, but not including the length field." href="http://www.w3.org/TR/PNG/#5CRC-algorithm">CRC</a></label>
-                                            <input name="chunk-0-crc-textarea" type="text" size="12" value="{{chunk.crcHex}}"/>
-                                            <input name="chunk-0-crc-ascii-textarea" type="text" size="10"  value="{{chunk.crc}}"/><sub>dec</sub>
+                                            <label><a tooltip="'A four-byte CRC (Cyclic Redundancy Code) calculated on the preceding bytes in the chunk, including the chunk type field and chunk data fields, but not including the length field.'" href="http://www.w3.org/TR/PNG/#5CRC-algorithm">CRC</a></label>
+                                            <input name="chunk-{{$index + 1}}-crc-textarea" type="text" size="12" value="{{chunk.crcHex}}"/>
+                                            <input name="chunk-{{$index + 1}}-crc-ascii-textarea" type="text" size="10"  value="{{chunk.crc}}"/><sub>dec</sub>
+                                            <label>Current CRC (auto-calculated)</label>
+                                            <input name="chunk-{{$index + 1}}-current-crc-textarea" type="text" size="12" value="{{chunk.currentCrcHex}}"/>
+                                            <input name="chunk-{{$index + 1}}-current-crc-ascii-textarea" type="text" size="10"  value="{{chunk.currentCRC}}"/><sub>dec</sub>
                                         </div>
                                     </div>
                                 </div>
@@ -204,6 +207,7 @@
         <script src="js/filters.js"></script>
         <script src="js/services.js"></script>
         <script src="js/pngimage.js"></script>
+        <script src="js/crc.js"></script>
         <script>
             // I need this script section to work-around a NB formatting bug:
             // https://netbeans.org/bugzilla/show_bug.cgi?id=229658

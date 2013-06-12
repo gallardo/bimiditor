@@ -50,4 +50,17 @@ describe("Crc suite", function() {
         var calculatedCRC = Crc().calculate(bytes, 0, bytes.byteLength);
         expect(toHex(calculatedCRC)).toBe(toHex(expectedCRC));
     });
+    it("should calculate the CRC of a subset of the buffer", function() {
+        var bytes = new ArrayBuffer(16);
+        var view = new Uint8Array(bytes);
+        view[4] = 0x49;
+        view[5] = 0x45;
+        view[6] = 0x4e;
+        view[7] = 0x44;
+        var expectedCRC = 0xae426082;
+
+        var calculatedCRC = Crc().calculate(bytes, 4, 4);
+        expect(toHex(calculatedCRC)).toBe(toHex(expectedCRC));
+    });
+
 });

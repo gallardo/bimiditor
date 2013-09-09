@@ -1,12 +1,12 @@
 <!doctype html>
 <!-- Conditional comment for mobile ie7 blogs.msdn.com/b/iemobile/ -->
-<!--[if IEMobile 7 ]>    <html class="no-js iem7" lang="en" ng-app="binPngEditorApp" id="ng-app"> <![endif]-->
-<!--[if (gt IEMobile 7)|!(IEMobile)]><!--> <html class="no-js" lang="en" ng-app="binPngEditorApp" id="ng-app"> <!--<![endif]-->
+<!--[if IEMobile 7 ]>    <html class="no-js iem7" lang="en" ng-app="EZWApp" id="ng-app"> <![endif]-->
+<!--[if (gt IEMobile 7)|!(IEMobile)]><!--> <html class="no-js" lang="en" ng-app="EZWApp" id="ng-app"> <!--<![endif]-->
 
     <head>
         <meta charset="utf-8">
 
-        <title>PNG-Editor</title>
+        <title>SWZ Playground</title>
         <meta name="description" content="">
 
         <!-- Mobile viewport optimization h5bp.com/ad -->
@@ -55,28 +55,24 @@
         <script src="lib/modernizr-2.0.6.min.js"></script>
     </head>
 
-    <body data-spy="scroll" data-target="#top-nav" ng-controller="BinPngEditorCtrl" chunk-stalker-nav-bar="pngEditedImage.chunks">
+    <body data-spy="scroll" data-target="#top-nav" ng-controller="EZWCtrl" chunk-stalker-nav-bar="pngEditedImage.chunks">
         <div id="top-nav" class="navbar navbar-fixed-top">
             <div class="navbar-inner" style="min-height:0">
                 <div class="container">
-                    <a class="brand" href="#">PNG Editor</a>
+                    <a class="brand" href="#">EZW</a>
                     <ul class="nav">
                         <li><a href="#FileInfoDiv">File info</a></li>
                         <li class="divider-vertical"></li>
-                        <li><a href="#EditedImageDiv">Edited</a></li>
-                        <li><a href="#SourceImageDiv">Source</a></li>
-                        <li class="divider-vertical"></li>
-                        <li ng-repeat="chunk in pngEditedImage.chunks">
-                            <a href="#chunk-{{$index+1}}"><small>Chunk {{$index + 1}}:</small> {{chunk.name}}</a>
-                        </li>
+                        <li><a href="#SrcImageDiv">Source</a></li>
+                        <li><a href="#TransformedImageDiv">Transformed</a></li>
                     </ul>
                 </div>
             </div>
         </div>
-        <div id="wrap" style="padding-bottom: 80px">
+        <div id="wrap" style="padding-bottom: 134px">
             <header class="hero-unit">
-                <h1>binPNG Editor</h1>
-                <p>A binary PNG editor to learn basic image-processing algorithms and technics</p>
+                <h1>EZW Playground</h1>
+                <p>A playground to experiment with image compression algorithms</p>
             </header>
             <div class="container-fluid">
                 <div class="row-fluid">
@@ -84,28 +80,49 @@
                         <ul class="nav nav-list navbar-inner affix">
                             <li class="nav-header">Jump to</li>
                             <li><a href="#FileInfoDiv">File info</a></li>
-                            <li><a href="#EditedImageDiv">Edited png</a></li>
-                            <li><a href="#SourceImageDiv">Source png</a></li>
-                            <li><a href="#PNGEditorDiv">PNG editor</a></li>
+                            <li><a href="#SrcImageDiv">Source image</a></li>
+                            <li><a href="#TransformedImageDiv">Transformed image</a></li>
                         </ul>
                     </nav>
 
                     <div id="main" class="span10" role="main">
                         <div class="row-fluid">
-                            <div id="FileInfoDiv" class="span12"></div>
-                            <div>
+                            <div id="FileInfoDiv" class="span3">
                                 <h2>File info</h2>
-                                <p>Name: <strong id="pngFileNameValue">{{pngFile.name}}</strong></p>
-                                <p>Type: <strong id="pngFileTypeValue">{{pngFile.type}}</strong></p>
-                                <p>Size: <strong id="pngFileSizeValue">{{pngFile.size}}</strong> bytes</p>
-                                <p>Last modified: <strong id="pngFileLastModifiedDateValue">{{pngFile.lastModifiedDate}}</strong></p>
-                                <p>Status: <strong class="{{pngFile.statusClass}}">{{pngFile.status}}</strong></p>
+                                <p>Name: <strong id="srcFileNameValue">{{srcFile.name}}</strong></p>
+                                <p>Type: <strong id="srcFileTypeValue">{{srcFile.type}}</strong></p>
+                                <p>Size: <strong id="srcFileSizeValue">{{srcFile.size}}</strong> bytes</p>
+                                <p>Last modified: <strong id="srcFileLastModifiedDateValue">{{srcFile.lastModifiedDate}}</strong></p>
+                            </div>
+                            <div id="SrcImageInfoDiv" class="span3">
+                                <h2>Image info</h2>
+                                <p>Height: <strong id="srcDataHeightValue">{{srcData.height || '--'}}</strong> pixels</p>
+                                <p>Width: <strong id="srcDataWidthValue">{{srcData.width || '--'}}</strong> pixels</p>
+                                <p>Uncompressed size: <strong id="srcDataSizeValue">{{srcData.data.length?(srcData.data.length * 4):'--'}}</strong> bytes</p>
+                                <p>Compress ratio: <strong id="srcDataCompressRatio">{{srcData.data.length?'1 : ' + (srcData.data.length * 4 / srcFile.size):'--'}}</strong></p>
                             </div>
                         </div>
 
                         <div id="ImagesDiv" class="row-fluid">
+                            <div id="SrcImageDiv" class="span6">
+                                <h2>Source image</h2>
+                                <div id="LoadFileDiv">
+                                    <form name="file-form">
+                                        <fieldset>
+                                            <legend class="hidden">Source image</legend>
+                                            <label for="image-file"><i id="image-file-icon" tooltip="'Select a file to load'" class="icon-folder-open"></i></label>
+                                            <div class="hidden"><input type="file" id="image-file" name="image-file" multiple=""/></div>
+                                            <label><i id="get-example-file-icon" class="icon-lenna" tooltip="'Load example image'" ng-click="loadLenna()"></i></label>
+                                        </fieldset>
+                                    </form>
+                                </div>
+                                <div id="file-drag">
+                                    <canvas id="src-image-canvas" width="100" height="100" class="img-polaroid" >Sorry, your browser does not support the &lt;canvas&gt; element.</canvas>
+                                </div>
+                            </div>
+
                             <div id="EditedImageDiv" class="span6">
-                                <h2>Edited image</h2>
+                                <h2>Transformed image</h2>
                                 <div>
                                     <form>
                                         <fieldset>
@@ -114,85 +131,55 @@
                                         </fieldset>
                                     </form>
                                 </div>
-                                <img id="edited-image-img" alt="Edited Image" width="{{pngEditedImage.width}}" height="{{pngEditedImage.height}}" ng-src="{{pngEditedImage.imgSrc}}" class="img-polaroid" />
+                                <img id="edited-image-img" alt="Edited Image" width="{{srcEditedImage.width}}" height="{{srcEditedImage.height}}" ng-src="{{srcEditedImage.imgSrc}}" class="img-polaroid" />
                             </div>
 
-                            <div id="SourceImageDiv" class="span6">
-                                <h2>Source image</h2>
-                                <div id="LoadFileDiv">
-                                    <form name="file-form">
-                                        <fieldset>
-                                            <legend class="hidden">PNG file</legend>
-                                            <label for="image-file"><i id="image-file-icon" tooltip="'Select a file to load'" class="icon-folder-open"></i></label>
-                                            <div class="hidden"><input type="file" id="image-file" name="image-file" multiple=""/></div>
-                                            <label><i id="get-example-file-icon" class="icon-lenna" tooltip="'Load example image'" ng-click="loadLenna()"></i></label>
-                                        </fieldset>
-                                    </form>
-                                </div>
-                                <div id="file-drag">
-                                    <img id="source-image-img" alt="Source Image" width="{{pngSourceImage.width}}" height="{{pngSourceImage.height}}" ng-src="{{pngSourceImage.imgSrc}}" class="img-polaroid" />
-                                </div>
-                            </div>
                         </div><!-- /#ImagesDiv -->
 
-                        <div id="Options" class="row-fluid">
-                            <header><h3>Options</h3></header>
+                        <div id="RawSrcDataDiv" class="row-fuid">
                             <div class="span12">
-                                <div class="row">
-                                    <label class="span2"><i id="recalculate-size-icon" class="icon-refresh" tooltip="'Auto-recalculate size on edits (not yet available)'"></i> File size synchronization: </label>
-                                    <div class="switch switch-mini"><input type="checkbox" disabled /></div>
-                                </div>
-                                <div class="row">
-                                    <label class="span2"><i id="recalculate-crc-icon" class="icon-refresh" tooltip="'Auto-recalculate CRC on edits (not yet available)'"></i> CRC synchronization: </label>
-                                    <div class="switch switch-mini "><input type="checkbox" disabled /></div>
-                                </div>
-                            </div>
-                        </div><!-- /#OptionsDiv -->
-
-                        <div class="row-fluid">
-                            <div id="PNGEditorDiv" ng-switch on="pngFile.loaded">
-                                <!-- XXX: When https://github.com/angular/angular.js/issues/768 is implemented, it should be possible to write <input model="pngEditedImage.@signatureHex" /> -->
-                                <div ng-switch-when="true">
-                                    <div id="signature">
-                                        <header><h3><i data-toggle="collapse" data-target="#signature .collapse" class="icon-chevron-down"></i>File signature</h3></header>
-                                        <div class="collapse in">
-                                            <label>Signature</label>
-                                            <input id="signature-textarea" name="signature-textarea" type="text" size="24" readonlyXXX="readonly" ng-model="pngEditedImage.signatureHex"/>
-                                        </div>
-                                    </div>
-
-                                    <div ng-repeat="chunk in pngEditedImage.chunks" id="chunk-{{$index + 1}}">
-                                        <header><h3><i data-toggle="collapse" data-target="#chunk-{{$index + 1}} .collapse" class="icon-chevron-down"></i> Chunk {{$index + 1}}: <a tooltip="chunk.nameMeaning.tooltip" ng-href="{{chunk.nameMeaning.href}}">{{chunk.name}}</a></h3></header>
-                                        <div class="collapse in">
-                                            <label>Length</label>
-                                            <input name="chunk-{{$index + 1}}-length-textarea" type="text" size="12" ng-model="chunk.lengthHex"/>
-                                            <input name="chunk-{{$index + 1}}-length-ascii-textarea" type="text" size="{{WIDTH_32BIT_BASE10}}" ng-model="chunk.lengthDec"/><sub>bytes</sub>
-                                            <label>Type/Name</label>
-                                            <input name="chunk-{{$index + 1}}-type-textarea" type="text" size="12" ng-model="chunk.nameHex"/>
-                                            <input name="chunk-{{$index + 1}}-type-ascii-textarea" type="text" size="4" ng-model="chunk.name"/><sub>ASCII</sub>
-                                            <label>Data</label>
-                                            <textarea name="chunk-{{$index + 1}}-data-textarea" rows="4" cols="50">{{chunk.dataHex}}</textarea>
-                                            <label><a tooltip="'A four-byte CRC (Cyclic Redundancy Code) calculated on the preceding bytes in the chunk, including the chunk type field and chunk data fields, but not including the length field.'" href="http://www.w3.org/TR/PNG/#5CRC-algorithm">CRC</a></label>
-                                            <input name="chunk-{{$index + 1}}-crc-textarea" type="text" size="12" value="{{chunk.crcHex}}"/>
-                                            <input name="chunk-{{$index + 1}}-crc-ascii-textarea" type="text" size="10"  value="{{chunk.crc}}"/><sub>dec</sub>
-                                            <label>Current CRC (auto-calculated)</label>
-                                            <input name="chunk-{{$index + 1}}-current-crc-textarea" type="text" size="12" value="{{chunk.currentCrcHex}}"/>
-                                            <input name="chunk-{{$index + 1}}-current-crc-ascii-textarea" type="text" size="10"  value="{{chunk.currentCRC}}"/><sub>dec</sub>
-                                        </div>
+                                <h2>Source data</h2>
+                                <ul class="nav nav-tabs" id="src-components-tabs">
+                                    <li class="active"><a href="#src-R-table" data-toggle="tab">red channel</a></li>
+                                    <li><a href="#src-G-table" data-toggle="tab">green channel</a></li>
+                                    <li><a href="#src-B-table" data-toggle="tab">blue channel</a></li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div ng-repeat="component in ['R','G','B']" class="tab-pane{{component==='R'?' active':''}}" id="src-{{component}}-table">
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    <th ng-repeat="i in srcData[component][0] track by $index">{{$index}}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="pixelRow in srcData[component] track by $index">
+                                                    <th>{{$index}}</th>
+                                                    <td ng-repeat="pixel in pixelRow track by $index" style="background-color: rgb({{pixel}},{{pixel}},{{pixel}})"></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
-                                <div ng-switch-default>
-                                    <h2>No image loaded yet</h2>
-                                </div>
                             </div>
-                            <!--<div id="PNGEditorDiv"></div>-->
                         </div>
+                        <div id="RawTransformedDataDiv" class="row-fuid">
+                            <div class="span12">
+                                <h2>Transformed data</h2>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
                     </div><!-- /#main -->
                 </div> <!-- /.row-fluid -->
             </div> <!-- /.container-fluid -->
         </div>
 
         <footer class="navbar navbar-fixed-bottom">
+            <hr/>
+            <div id="status">
+                <p>Status: <strong class="{{status.class}}">{{status.message}}</strong></p>
+            </div>
             <hr/>
             <p class="text-center"><small>&copy; 2013 ag</small></p>
             <p class="text-center"><small><a href="http://glyphicons.com">Glyphicons Free</a> licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</small></p>
@@ -202,7 +189,7 @@
         <!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if necessary -->
         <!-- AG 2013-06-12: bootstrap-switch requires jquery >= 1.9.0 -->
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
-        <script>window.jQuery || document.write('<script src="js/libs/jquery-1.9.0.min.js"><\/script>');</script>
+        <script>window.jQuery || document.write('<script src="lib/jquery-1.9.0.min.js"><\/script>');</script>
 
         <!-- Grab Google CDN's AngularJs, with a protocol relative URL; fall back to local if necessary -->
         <!-- Angular 1.0.* doesn't support $http...responseType. See https://github.com/angular/angular.js/issues/1013 -->
@@ -283,7 +270,18 @@
                     initFileSelector();
                     initDragAndDrop();
                 }
+//                $('#src-component-tabs a[href="src-R-table"]').tab('show');
             });
+
+//            (function() {
+//                var canvas = document.getElementById('canvas2');
+//                var context = canvas.getContext('2d');
+//                var base_img = new Image();
+//                base_img.src = 'img/uni-logo.jpg';
+//                base_img.onload = function() {
+//                    context.drawImage(base_img, 100, 100);
+//                };
+//            })();
         </script>
         <!-- end scripts-->
 

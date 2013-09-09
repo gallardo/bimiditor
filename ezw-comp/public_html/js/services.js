@@ -5,6 +5,6 @@
 
 // Demonstrate how to register services
 // In this case it is a simple value service.
-angular.module('binPngEditorApp.services', []);
-//angular.module('binPngEditorApp.services', []).
+angular.module('EZWApp.services', []);
+//angular.module('EZWApp.services', []).
 //  value('version', '0.1');

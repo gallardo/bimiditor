@@ -1,6 +1,6 @@
 'use strict';
 
-var app = angular.module('binPngEditorApp.directives', []);
+var app = angular.module('EZWApp.directives', []);
 
 /**
  * To use with bootstrap-scrollspy: this directive must be applied to the

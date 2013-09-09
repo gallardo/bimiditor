@@ -2,7 +2,7 @@
 
 /* Filters */
 
-angular.module('binPngEditorApp.filters', []);
+angular.module('EZWApp.filters', []);
 //angular.module('binPngEditorApp.filters', []).
 //  filter('interpolate', ['version', function(version) {
 //    return function(text) {

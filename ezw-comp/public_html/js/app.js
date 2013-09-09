@@ -1,8 +1,8 @@
 'use strict';
 
-var binPngEditorApp = angular.module('binPngEditorApp',
-        ['binPngEditorApp.filters',
-        'binPngEditorApp.services',
-        'binPngEditorApp.directives',
-        'binPngEditorApp.controllers']);
+var EZWApp = angular.module('EZWApp',
+        ['EZWApp.filters',
+        'EZWApp.services',
+        'EZWApp.directives',
+        'EZWApp.controllers']);
                 

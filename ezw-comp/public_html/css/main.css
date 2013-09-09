@@ -3,7 +3,7 @@
     Created on : May 10, 2013, 3:01:26 PM
     Author     : alberto
     Description:
-        Customized binPngEditor css.
+        Customized EZW css.
 */
 
 #PNGEditorDiv input,
@@ -55,4 +55,8 @@ footer {
   background-image: url("../img/Lenna_64.png");
   background-size: 14px 14px;
   background-position: 0;
+}
+
+#RawDataDiv td {
+    padding: 5px;
 }

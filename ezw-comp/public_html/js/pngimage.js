@@ -92,275 +92,31 @@ function guid() {
 }
 
 /**
- * @class 
- * @param {ArrayBuffer} buffer raw image data
- * @param {Number} start pointer to the start of the chunk in the
- *       ArrayBuffer
+ * ArrayBuffer to data:URL
+ * 
+ * @param {ArrayBiffer} arrayBuffer
+ * @param {String} fileType mime type (e.g. 'image/png', 'image/jpeg', ...)
+ * @returns {String} Data URLs allow you to completely define an image as a
+ *       Base64 encoded string of characters directly in your code. eg:
+ *       <tt>var img_src = 'data:image/gif;base64,R0lGODlhCwALAIAAAAAA3pn/ZiH5BAEAAAEALAAAAAALAAsAAAIUhA+hkcuO4lmNVindo7qyrIXiGBYAOw==';</tt>
  */
-function Chunk(buffer, start) {
-    var _chunkStartPtr = start; // Points to the start of the chunk
-    var _bytes = new Uint8Array(buffer);
-    var _dataView = new DataView(buffer);
-    var _currentCRC = []; // Current calculated CRC
-    /**
-     * Number of bytes in the chunk's data field. The length counts
-     * <b>only</b> the data field, <b>not</b> itself, the chunk type,
-     * or the CRC. Zero is a valid length. Although encoders and
-     * decoders should treat the length as unsigned, its value shall
-     * not exceed 231-1 bytes
-     *
-     * @returns {Number} length of data block
-     */
-    var _getDataLength = function() {
-        return _dataView.getUint32(_chunkStartPtr);
-    };
-    var _getChunksLength = function() {
-        return _getDataLength() + 4 + 4 + 4; // + length + name + crc
-    };
-    /**
-     * Calculated on the preceding bytes in the chunk, including the
-     * chunk type field and chunk data fields, but <b>not</b> including
-     * the length field.
-     */
-    var _updateCRC = function() {
-        var start = _chunkStartPtr + 4; // length not included
-        var len = _getDataLength() + 4; // + type
-        _currentCRC = Crc().calculate(buffer, start, len);
-        console.log('calculated crc for buffer['
-            + start + ',' + len + '] ='+ (_currentCRC>>>0).toString(16));
-        console.log('from byte ' + _bytes[start].toString(16) + " until " + _bytes[start+len].toString(16));
-    };
-    return {
-        /**
-         * @returns {String}
-         */
-        get lengthHex() {
-            return batohexs(_bytes.subarray(_chunkStartPtr, _chunkStartPtr + 4));
-        },
-        /**
-         * Overwrites the corresponding bytes of the original image.
-         * @param {String} hex string containing number in
-         *       hexadecimal notation
-         * @returns {Chunk} 'this' for method chaining
-         */
-        set lengthHex(hex) {
-            var hexBytes = hexstoba(hex);
-            var _ptr = _chunkStartPtr;
-            for (var i = 0; i < hexBytes.length; ++i, ++_ptr) {
-                _bytes[_ptr] = hexBytes[i];
-            }
-            _updateCRC();
-            return this;
-        },
-        /**
-         * @returns {String}
-         */
-        get lengthDec() {
-            return _dataView.getInt32(_chunkStartPtr);
-        },
-        /**
-         * Overwrites the corresponding bytes of the original image.
-         * @param {Number} length length of the chunk in bytes
-         * @returns {Chunk} 'this' for method chaining
-         */
-        set lengthDec(length) {
-            _dataView.setUint32(_chunkStartPtr, length);
-            _updateCRC();
-            return this;
-        },
-        /**
-         * @returns {Number} chunk's length in bytes
-         */
-        get chunksLength() {
-            return _getChunksLength();
-        },
-        /**
-         * @returns {String}
-         */
-        get nameHex() {
-            return batohexs(_bytes.subarray(_chunkStartPtr + 4, _chunkStartPtr + 8));
-        },
-        /**
-         * Overwrites the corresponding bytes of the original image.
-         * @param {String} hex string containing name in
-         *       hexadecimal notation
-         * @returns {Chunk} 'this' for method chaining
-         */
-        set nameHex(hex) {
-            var hexBytes = hexstoba(hex);
-            var _ptr = _chunkStartPtr + 4;
-            for (var i = 0; i < hexBytes.length; i++, ++_ptr) {
-                _bytes[_ptr] = hexBytes[i];
-            }
-            _updateCRC();
-            return this;
-        },
-        /**
-         * @returns {String}
-         */
-        get name() {
-            return batos(_bytes.subarray(_chunkStartPtr + 4, _chunkStartPtr + 8));
-        },
-        /**
-         * Overwrites the corresponding bytes of the original image.
-         * @param {String} name name of the chunk
-         * @returns {Chunk} 'this' for method chaining
-         */
-        set name(newName) {
-            var _ptr = _chunkStartPtr + 4;
-            for (var i = 0; i < newName.length; i++, ++_ptr) {
-                _bytes[_ptr] = (newName.charCodeAt(i) & 0x7f);
-            }
-            _updateCRC();
-            return this;
-        },
-        get nameMeaning() {
-            var _meanings = {
-                // Critial chunks
-                IHDR: {tooltip:"Image Header", href:"http://www.w3.org/TR/PNG/#11IHDR"},
-                PLTE: {tooltip:"Palette", href:"http://www.w3.org/TR/PNG/#11PLTE"},
-                IDAT: {tooltip:"Image data", href:"http://www.w3.org/TR/PNG/#11IDAT"},
-                IEND: {tooltip:"Image trailer", href:"http://www.w3.org/TR/PNG/#11IEND"},
-                // Ancillary chunks
-                // Ancillary - Transparency
-                TRNS: {tooltip:"Transparency", href:"http://www.w3.org/TR/PNG/#11tRNS"},
-                // Ancillary - Colour space information
-                CHRM: {tooltip:"Colour space information", href:"http://www.w3.org/TR/PNG/#11cHRM"},
-                GAMA: {tooltip:"Image gamma", href:"http://www.w3.org/TR/PNG/#11gAMA"},
-                ICCP: {tooltip:"Embedded ICC profile", href:"http://www.w3.org/TR/PNG/#11iCCP"},
-                SBIT: {tooltip:"Significant bits", href:"http://www.w3.org/TR/PNG/#11sBIT"},
-                SRGB: {tooltip:"Standard RGB colour space", href:"http://www.w3.org/TR/PNG/#11sRGB"},
-                // Ancillary - Textual information
-                TEXT: {tooltip:"Textual data", href:"http://www.w3.org/TR/PNG/#11tEXt"},
-                ZTXT: {tooltip:"Compressed textual data", href:"http://www.w3.org/TR/PNG/#11zTXt"},
-                ITXT: {tooltip:"International textual data", href:"http://www.w3.org/TR/PNG/#11iTXt"},
-                // Ancillary - Miscellaneous information
-                BKGD: {tooltip:"Background colour", href:"http://www.w3.org/TR/PNG/#11bKGD"},
-                HIST: {tooltip:"Image histogram", href:"http://www.w3.org/TR/PNG/#11hIST"},
-                PHYS: {tooltip:"Physical pixel dimensions", href:"http://www.w3.org/TR/PNG/#11pHYs"},
-                SPLT: {tooltip:"Suggested palette", href:"http://www.w3.org/TR/PNG/#11sPLT"},
-                TIME: {tooltip:"Image last-modification time", href:"http://www.w3.org/TR/PNG/#11tIME"},
-            };
-            return _meanings[this.name.toUpperCase()];
-        },
-        /**
-         * @returns {String}
-         */
-        get dataHex() {
-            return batohexs(_bytes.subarray(_chunkStartPtr + 8, _chunkStartPtr + 8 + _getDataLength()));
-        },
-        /**
-         * Saved CRC (from data stream)
-         * @returns {String}
-         */
-        get crcHex() {
-            return batohexs(_bytes.subarray(_chunkStartPtr + 8 + _getDataLength(), _chunkStartPtr + 8 + _getDataLength() + 4));
-        },
-        /**
-         * Saved CRC (from data stream)
-         * @returns {Number}
-         */
-        get crc() {
-            return _dataView.getInt32(_chunkStartPtr + 8 + _getDataLength());
-        },
-        get currentCRC() {
-            _updateCRC();
-            return "" + _currentCRC;
-        },
-        get currentCrcHex() {
-            _updateCRC();
-            console.debug("Getting current Crc Hex");
-            return _currentCRC.toString(16);
-        },
-    };
+function abtodataURL(arrayBuffer, fileType) {
+        var _bytes = new Uint8Array(arrayBuffer);
+        var _encodedBytes = batobase64(_bytes);
+        return 'data:' + fileType + ';base64,' + _encodedBytes;
 }
 
 /**
- * @class  API to access png data
- * @param {ArrayBuffer} buffer raw png data
- */
-function PngImage(buffer) {
-    var _bytes = new Uint8Array(buffer);
-    var _dataView = new DataView(buffer);
-    var WIDTH_PTR = 8 + 4 + 4; // Signature + IHDR's length + Chunks' name
-    var HEIGHT_PTR = WIDTH_PTR + 4;
-    var _signature = _bytes.subarray(0, 8);
-    var _width = _dataView.getUint32(WIDTH_PTR);
-    var _height = _dataView.getUint32(HEIGHT_PTR);
-    var _chunks = [];
-    // pointer to the index in the byte array of the next chunk to read
-    var _ptr = 8;
-    var _nChunks = 0;
-    // caches the base64 encoded image
-    var _encodedBytes = {};
-    var _that = {
-        /**
-         * @returns {String}
-         */
-        get signatureHex() {
-            return batohexs(_signature);
-        },
-        /**
-         * @returns {Number}
-         */
-        get width() {
-            return _width;
-        },
-        /**
-         * @returns {Number}
-         */
-        get height() {
-            return _height;
-        },
-        /**
-         * @returns {Array} map of chunks
-         */
-        get chunks() {
-            return _chunks;
-        },
-        /**
-         * To quick detect changes in the data
-         * @return {Number}
-         */
-        get hash() {
-            var _hash = 0;
-            for (var i = 0; i < _chunks.length; ++i) {
-                _hash += _chunks[i].crc;
-            }
-            return _hash;
-        },
-        get imgSrc() {
-            if (!_encodedBytes.hash || _encodedBytes.hash != this.hash) {
-                _encodedBytes = { bytes: batobase64(_bytes), hash: this.hash};
-            }
-            // return 'data:application/octet-stream;base64,' + 'SG9sYSwgbXVuZG8hCg==';
-            return 'data:image/png;base64,' + _encodedBytes.bytes;
-        }
-    };
-    // read chunks
-    console.log('Reading chunks...');
-    while (_ptr < _bytes.length) {
-        var c = Chunk(buffer, _ptr);
-        console.log('Read chunk ' + _nChunks + ' named "' + c.name + '": ' + c.chunksLength + ' bytes.');
-        _chunks[_nChunks] = c;
-        _ptr += c.chunksLength;
-        ++_nChunks;
-    }
-    console.log(_nChunks + ' chunks read');
-    return _that;
-}
-
-/**
- * Reads the image file into a <tt>PngImage</tt> and calls <tt>setPngImage</tt>
+ * Reads the file as data:URL and call back <tt>setDataURL</tt>
  * with it as parameter.
  * 
  * @param {File} file
- * @param {function(PngImage)} callback will be called with the fresh-built
- *       pngImage as parameter
+ * @param {String} fileType mime type
+ * @param {function(String)} setDataURL callback
  */
-function readImage(file, setPngImage) {
+function readDataURL(file, fileType, setDataURL) {
     var _reader = new FileReader();
-    var _setPngImage = setPngImage;
+    var _setDataURL = setDataURL;
 
     _reader.onload = function(evt) {
         if (evt.target.readyState !== 2)
@@ -370,8 +126,7 @@ function readImage(file, setPngImage) {
             return;
         }
 
-        var pngImage = PngImage(evt.target.result);
-        _setPngImage(pngImage);
+        _setDataURL(abtodataURL(evt.target.result, fileType));
     };
 
     _reader.readAsArrayBuffer(file);
